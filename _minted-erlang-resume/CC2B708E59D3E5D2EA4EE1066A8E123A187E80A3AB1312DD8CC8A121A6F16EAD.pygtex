@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} on debian based systems}
+sudo apt install gcc
+\PYG{c+c1}{\PYGZsh{} on Fedora}
+sudo yum install gcc \PYG{c+c1}{\PYGZsh{} (I think)}
+
+\PYG{c+c1}{\PYGZsh{} if you\PYGZsq{}re running any other linux, you probably know how to do this}
+\PYG{c+c1}{\PYGZsh{} without me telling you}
+\end{Verbatim}

@@ -1,0 +1,66 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{module}\PYG{p}{(}\PYG{n}{interface}\PYG{p}{).}
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{compile}\PYG{p}{(}\PYG{n}{export\PYGZus{}all}\PYG{p}{).}
+\PYG{c}{\PYGZpc{}\PYGZpc{} \PYGZhy{}export([start/0, stop/0, twice/1, sum/2, log\PYGZus{}and\PYGZus{}le\PYGZus{}encode/2, encode/1]).}
+
+\PYG{n+nf}{start} \PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{n+nb}{register}\PYG{p}{(}\PYG{n}{interface}\PYG{p}{,}
+             \PYG{n+nb}{spawn}\PYG{p}{(}\PYG{k}{fun}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+                           \PYG{n+nb}{process\PYGZus{}flag}\PYG{p}{(}\PYG{n}{trap\PYGZus{}exit}\PYG{p}{,} \PYG{n}{true}\PYG{p}{),}
+                           \PYG{n+nv}{Port} \PYG{o}{=} \PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n+nb}{spawn}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}./interface\PYGZdq{}}\PYG{p}{\PYGZcb{},} \PYG{p}{[\PYGZob{}}\PYG{n}{packet}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}]),}
+                           \PYG{n}{loop}\PYG{p}{(}\PYG{n+nv}{Port}\PYG{p}{)}
+                   \PYG{k}{end}\PYG{p}{)).}
+
+\PYG{n+nf}{stop}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{o}{?}\PYG{n+nv}{MODULE} \PYG{o}{!} \PYG{n}{stop}\PYG{p}{.}
+\PYG{n+nf}{twice}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{call\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n}{twice}\PYG{p}{,} \PYG{n+nv}{X}\PYG{p}{\PYGZcb{}).}
+\PYG{n+nf}{sum}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{,} \PYG{n+nv}{Y}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{call\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n}{sum}\PYG{p}{,} \PYG{n+nv}{X}\PYG{p}{,} \PYG{n+nv}{Y}\PYG{p}{\PYGZcb{}).}
+\PYG{n+nf}{call\PYGZus{}port}\PYG{p}{(}\PYG{n+nv}{Msg}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{o}{?}\PYG{n+nv}{MODULE} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{call}\PYG{p}{,} \PYG{n}{self}\PYG{p}{(),} \PYG{n+nv}{Msg}\PYG{p}{\PYGZcb{},}
+    \PYG{k}{receive}
+        \PYG{p}{\PYGZob{}}\PYG{o}{?}\PYG{n+nv}{MODULE}\PYG{p}{,} \PYG{n+nv}{Result}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nv}{Result}
+    \PYG{k}{end}\PYG{p}{.}
+
+\PYG{n+nf}{loop}\PYG{p}{(}\PYG{n+nv}{Port}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{k}{receive}
+        \PYG{p}{\PYGZob{}}\PYG{n}{call}\PYG{p}{,} \PYG{n+nv}{Caller}\PYG{p}{,} \PYG{n+nv}{Msg}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nv}{Port} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{self}\PYG{p}{(),} \PYG{p}{\PYGZob{}}\PYG{n}{command}\PYG{p}{,} \PYG{n}{encode}\PYG{p}{(}\PYG{n+nv}{Msg}\PYG{p}{)\PYGZcb{}\PYGZcb{},}
+            \PYG{k}{receive}
+                \PYG{p}{\PYGZob{}}\PYG{n+nv}{Port}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{data}\PYG{p}{,} \PYG{n+nv}{Data}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+                    \PYG{n+nv}{Caller} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{o}{?}\PYG{n+nv}{MODULE}\PYG{p}{,} \PYG{n}{decode}\PYG{p}{(}\PYG{n+nv}{Data}\PYG{p}{)\PYGZcb{}}
+            \PYG{k}{end}\PYG{p}{,}
+            \PYG{n}{loop}\PYG{p}{(}\PYG{n+nv}{Port}\PYG{p}{);}
+        \PYG{n}{stop} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nv}{Port} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{self}\PYG{p}{(),} \PYG{n}{close}\PYG{p}{\PYGZcb{},}
+            \PYG{k}{receive}
+                \PYG{p}{\PYGZob{}}\PYG{n+nv}{Port}\PYG{p}{,} \PYG{n}{closed}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+                    \PYG{n+nb}{exit}\PYG{p}{(}\PYG{n}{normal}\PYG{p}{)}
+            \PYG{k}{end}\PYG{p}{;}
+        \PYG{p}{\PYGZob{}}\PYG{n}{\PYGZsq{}EXIT\PYGZsq{}}\PYG{p}{,} \PYG{n+nv}{Port}\PYG{p}{,} \PYG{n+nv}{Reason}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nb}{exit}\PYG{p}{(\PYGZob{}}\PYG{n}{port\PYGZus{}terminated}\PYG{p}{,} \PYG{n+nv}{Reason}\PYG{p}{\PYGZcb{})}
+    \PYG{k}{end}\PYG{p}{.}
+
+\PYG{c}{\PYGZpc{} Integer log to know length}
+\PYG{n+nf}{log\PYGZus{}and\PYGZus{}le\PYGZus{}encode}\PYG{p}{(}\PYG{n+nv}{N}\PYG{p}{,} \PYG{n+nv}{Base}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{k}{if}
+        \PYG{p}{(}\PYG{n+nv}{N} \PYG{o}{\PYGZlt{}} \PYG{n+nv}{Base}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{[}\PYG{n+nv}{N}\PYG{p}{]\PYGZcb{};}
+        \PYG{p}{(}\PYG{n+nv}{N} \PYG{o}{\PYGZgt{}=} \PYG{n+nv}{Base}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{p}{\PYGZob{}}\PYG{n+nv}{LN}\PYG{p}{,} \PYG{n+nv}{Repr}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n}{log\PYGZus{}and\PYGZus{}le\PYGZus{}encode}\PYG{p}{(}\PYG{n+nv}{N} \PYG{o+ow}{div} \PYG{n+nv}{Base}\PYG{p}{,} \PYG{n+nv}{Base}\PYG{p}{),}
+            \PYG{p}{\PYGZob{}}\PYG{n+nv}{LN} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{[}\PYG{n+nv}{N} \PYG{o+ow}{rem} \PYG{n+nv}{Base} \PYG{p}{|} \PYG{n+nv}{Repr}\PYG{p}{]\PYGZcb{}}
+    \PYG{k}{end}\PYG{p}{.}
+
+\PYG{n+nf}{encode}\PYG{p}{(\PYGZob{}}\PYG{n}{sum}\PYG{p}{,} \PYG{n+nv}{X}\PYG{p}{,} \PYG{n+nv}{Y}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{p}{\PYGZob{}}\PYG{n+nv}{LX}\PYG{p}{,} \PYG{n+nv}{RX}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n}{log\PYGZus{}and\PYGZus{}le\PYGZus{}encode}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{),} \PYG{c}{\PYGZpc{} L \PYGZhy{}\PYGZgt{} Log, R \PYGZhy{}\PYGZgt{} Repr}
+    \PYG{p}{\PYGZob{}}\PYG{n+nv}{LY}\PYG{p}{,} \PYG{n+nv}{RY}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n}{log\PYGZus{}and\PYGZus{}le\PYGZus{}encode}\PYG{p}{(}\PYG{n+nv}{Y}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{),}
+    \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n+nv}{LX} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{++} \PYG{n+nv}{RX} \PYG{o}{++} \PYG{p}{[}\PYG{n+nv}{LY} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{++} \PYG{n+nv}{RY}\PYG{p}{;}
+\PYG{n+nf}{encode}\PYG{p}{(\PYGZob{}}\PYG{n}{twice}\PYG{p}{,} \PYG{n+nv}{X}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{p}{\PYGZob{}}\PYG{n+nv}{LX}\PYG{p}{,} \PYG{n+nv}{RX}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n}{log\PYGZus{}and\PYGZus{}le\PYGZus{}encode}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{,} \PYG{l+m+mi}{256}\PYG{p}{),}
+    \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n+nv}{LX} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{++} \PYG{n+nv}{RX}\PYG{p}{.}
+
+\PYG{n+nf}{decode}\PYG{p}{([\PYGZus{}}\PYG{n+nv}{Size}\PYG{p}{|}\PYG{n+nv}{LR}\PYG{p}{])} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{n+nn}{lists}\PYG{p}{:}\PYG{n+nf}{foldr}\PYG{p}{(}\PYG{k}{fun}
+                    \PYG{p}{(}\PYG{n+nv}{Elem}\PYG{p}{,} \PYG{n+nv}{AccIn}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+                        \PYG{n+nv}{AccIn} \PYG{o}{*} \PYG{l+m+mi}{256} \PYG{o}{+} \PYG{n+nv}{Elem}
+                \PYG{k}{end}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n+nv}{LR}\PYG{p}{).}
+\end{Verbatim}

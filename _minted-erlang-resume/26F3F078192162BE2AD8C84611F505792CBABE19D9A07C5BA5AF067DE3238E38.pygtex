@@ -1,0 +1,179 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}assert.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdlib.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}define BUF\PYGZus{}LEN 1024}
+\PYG{c+cp}{\PYGZsh{}define MAX(x, y) (((x) \PYGZgt{} (y)) ? (x) : (y))}
+
+\PYG{c+c1}{// To enable debug messages, turn this to a 1.}
+\PYG{c+cp}{\PYGZsh{}define DEBUG 0}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * General notes about types:}
+\PYG{c+cm}{ * \PYGZhy{} size\PYGZus{}t is just unsigned long, and ssize\PYGZus{}t is signed long.}
+\PYG{c+cm}{ * \PYGZhy{} unsigned char \PYGZhy{}\PYGZgt{} byte.}
+\PYG{c+cm}{ */}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * This function reads a command from stdin. It is mostly}
+\PYG{c+cm}{ * self\PYGZhy{}explanatory, and the parts which aren\PYGZsq{}t, I added comments for.}
+\PYG{c+cm}{ */}
+\PYG{k+kt}{ssize\PYGZus{}t} \PYG{n+nf}{read\PYGZus{}cmd}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{buf}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{max\PYGZus{}len}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{header\PYGZus{}len}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{ssize\PYGZus{}t} \PYG{n}{rd} \PYG{o}{=} \PYG{n}{read}\PYG{p}{(}\PYG{n}{STDIN\PYGZus{}FILENO}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{n}{header\PYGZus{}len}\PYG{p}{);}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{rd} \PYG{o}{!=} \PYG{p}{(}\PYG{k+kt}{ssize\PYGZus{}t}\PYG{p}{)} \PYG{n}{header\PYGZus{}len}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}Could not read header of cmd, rd = \PYGZpc{}ld}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{rd}\PYG{p}{);}
+                \PYG{k}{return} \PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{c+c1}{// if (DEBUG) fprintf(stderr, \PYGZdq{}read header of size \PYGZpc{}ld\PYGZbs{}n\PYGZdq{}, rd);}
+
+        \PYG{c+cm}{/* The following for loop turns the header\PYGZus{}len\PYGZhy{}long header}
+\PYG{c+cm}{         * into a value for our reading (i.e. it is doing the decoding}
+\PYG{c+cm}{         * of a big\PYGZhy{}endian\PYGZhy{}encoded integer */}
+        \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{len} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{c+c1}{// length of message}
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{n}{header\PYGZus{}len} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{exp} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{n}{i}\PYG{p}{,} \PYG{o}{++}\PYG{n}{exp}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{n}{len} \PYG{o}{|=} \PYG{p}{(}\PYG{n}{buf}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZlt{}\PYGZlt{}} \PYG{n}{exp} \PYG{o}{*} \PYG{l+m+mi}{8}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{c+c1}{// if (DEBUG) fprintf(stderr, \PYGZdq{}header says size of buf is: \PYGZpc{}lu\PYGZbs{}n\PYGZdq{}, len);}
+
+        \PYG{c+cm}{/* The following loop reads from stdin into buf until we\PYGZsq{}ve}
+\PYG{c+cm}{         * either filled the buffer or finished reading */}
+        \PYG{k+kt}{int} \PYG{n}{curr\PYGZus{}i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+        \PYG{k}{while} \PYG{p}{(}\PYG{n}{len} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0} \PYG{o}{\PYGZam{}\PYGZam{}} \PYG{p}{(}\PYG{n}{max\PYGZus{}len} \PYG{o}{\PYGZhy{}} \PYG{n}{curr\PYGZus{}i} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+                \PYG{n}{rd} \PYG{o}{=} \PYG{n}{read}\PYG{p}{(}\PYG{n}{STDIN\PYGZus{}FILENO}\PYG{p}{,} \PYG{n}{buf} \PYG{o}{+} \PYG{n}{curr\PYGZus{}i}\PYG{p}{,} \PYG{n}{MAX}\PYG{p}{(}\PYG{n}{max\PYGZus{}len} \PYG{o}{\PYGZhy{}} \PYG{n}{curr\PYGZus{}i}\PYG{p}{,} \PYG{n}{len}\PYG{p}{));}
+                \PYG{c+c1}{// if (DEBUG) fprintf(stderr, \PYGZdq{}read \PYGZpc{}ld bytes from stdin\PYGZbs{}n\PYGZdq{}, rd);}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{rd} \PYG{o}{\PYGZlt{}=} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}} \PYG{c+cm}{/* error or EOF */}
+                        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                                \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,}
+                                        \PYG{l+s}{\PYGZdq{}return value of \PYGZpc{}ld while reading message}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+                                        \PYG{n}{rd}\PYG{p}{);}
+                        \PYG{p}{\PYGZcb{}}
+                        \PYG{k}{return} \PYG{l+m+mi}{\PYGZhy{}1}\PYG{p}{;}
+                \PYG{p}{\PYGZcb{}}
+
+                \PYG{n}{curr\PYGZus{}i} \PYG{o}{+=} \PYG{n}{rd}\PYG{p}{;}
+                \PYG{n}{len} \PYG{o}{\PYGZhy{}=} \PYG{n}{rd}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{c+cm}{/* return how much we\PYGZsq{}ve read */}
+        \PYG{k}{return} \PYG{n}{curr\PYGZus{}i}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * This function outputs a hexdump to stderr.}
+\PYG{c+cm}{ */}
+\PYG{k+kt}{void} \PYG{n+nf}{hexdump}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{buf}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{len}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{int} \PYG{n}{line\PYGZus{}len} \PYG{o}{=} \PYG{l+m+mi}{8}\PYG{p}{;}
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{size\PYGZus{}t} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{len}\PYG{p}{;} \PYG{o}{++}\PYG{n}{i}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZpc{}x\PYGZpc{}x \PYGZdq{}}\PYG{p}{,} \PYG{p}{(}\PYG{n}{buf}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{4}\PYG{p}{)} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{);}
+                \PYG{k}{if} \PYG{p}{((}\PYG{n}{i} \PYG{o}{\PYGZpc{}} \PYG{n}{line\PYGZus{}len} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{o}{\PYGZam{}\PYGZam{}} \PYG{p}{(}\PYG{n}{i} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+                        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * Decodes an int starting at the pointer provided.}
+\PYG{c+cm}{ * Silently fails on len \PYGZgt{}= sizeof(unsigned long)}
+\PYG{c+cm}{ */}
+\PYG{k+kt}{unsigned} \PYG{k+kt}{long} \PYG{n}{decode\PYGZus{}le}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{buf}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{len}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{int} \PYG{n}{ret} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+        \PYG{k}{while} \PYG{p}{(}\PYG{n}{len}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{n}{ret} \PYG{o}{\PYGZlt{}\PYGZlt{}=} \PYG{l+m+mi}{8}\PYG{p}{;}
+                \PYG{n}{ret} \PYG{o}{|=} \PYG{o}{*}\PYG{n}{buf}\PYG{o}{++}\PYG{p}{;}
+                \PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{n}{len}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{return} \PYG{n}{ret}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/*}
+\PYG{c+cm}{ * This function should really be trashed (because it doesn\PYGZsq{}t support}
+\PYG{c+cm}{ * fragmentation of result. There should be a loop very similar to the}
+\PYG{c+cm}{ * read loop in read\PYGZus{}cmd here), but it does the job technically...}
+\PYG{c+cm}{ */}
+\PYG{k+kt}{void} \PYG{n}{write\PYGZus{}result}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{long} \PYG{n}{x}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{long}\PYG{p}{)} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{p}{];}
+        \PYG{k}{while} \PYG{p}{(}\PYG{n}{x}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{n}{buf}\PYG{p}{[}\PYG{n}{i}\PYG{o}{++}\PYG{p}{]} \PYG{o}{=} \PYG{n}{x} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xff}\PYG{p}{;}
+                \PYG{n}{x} \PYG{o}{\PYGZgt{}\PYGZgt{}=} \PYG{l+m+mi}{8}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{i} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{;}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{n}{head}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{i}\PYG{p}{\PYGZcb{};}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}C program sending the following bytes to erlang (with header):}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+        \PYG{k+kt}{int} \PYG{n}{wr} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+        \PYG{n}{wr} \PYG{o}{=} \PYG{n}{write}\PYG{p}{(}\PYG{n}{STDOUT\PYGZus{}FILENO}\PYG{p}{,} \PYG{n}{head}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{);}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{wr} \PYG{o}{!=} \PYG{l+m+mi}{2}\PYG{p}{)} \PYG{p}{\PYGZob{}} \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}failed to write result\PYGZdq{}}\PYG{p}{);} \PYG{p}{\PYGZcb{}}
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{2}\PYG{p}{;} \PYG{o}{++}\PYG{n}{j}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZpc{}x\PYGZpc{}x \PYGZdq{}}\PYG{p}{,} \PYG{p}{(}\PYG{n}{head}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{4}\PYG{p}{)} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{,} \PYG{n}{head}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{n}{write}\PYG{p}{(}\PYG{n}{STDOUT\PYGZus{}FILENO}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{,} \PYG{n}{i}\PYG{p}{);}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{wr} \PYG{o}{!=} \PYG{n}{i}\PYG{p}{)} \PYG{p}{\PYGZob{}} \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}failed to write result\PYGZdq{}}\PYG{p}{);} \PYG{p}{\PYGZcb{}}
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}} \PYG{n}{i}\PYG{p}{;} \PYG{o}{++}\PYG{n}{j}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZpc{}x\PYGZpc{}x \PYGZdq{}}\PYG{p}{,} \PYG{p}{(}\PYG{n}{buf}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{l+m+mi}{4}\PYG{p}{)} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{,} \PYG{n}{buf}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{\PYGZam{}} \PYG{l+m+mh}{0xf}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n}{main}\PYG{p}{()} \PYG{p}{\PYGZob{}}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}starting external program}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{n}{buf}\PYG{p}{[}\PYG{n}{BUF\PYGZus{}LEN}\PYG{p}{];}
+
+        \PYG{c+cm}{/* This is the event loop. Read a command, figure out which}
+\PYG{c+cm}{         * command is being invoked, then send the result back. */}
+        \PYG{k+kt}{ssize\PYGZus{}t} \PYG{n}{rd}\PYG{p}{;}
+        \PYG{k}{while} \PYG{p}{((}\PYG{n}{rd} \PYG{o}{=} \PYG{n}{read\PYGZus{}cmd}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{,} \PYG{n}{BUF\PYGZus{}LEN}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{))} \PYG{o}{\PYGZgt{}=} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{c+cm}{/*}
+\PYG{c+cm}{                 * instead of actually calling the functions that I\PYGZsq{}m}
+\PYG{c+cm}{                 * supposed to, I\PYGZsq{}m just going to hexdump the input}
+\PYG{c+cm}{                 * that I get from erlang for illustrative purposes}
+\PYG{c+cm}{                 * for now}
+\PYG{c+cm}{                 */}
+                \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                        \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,}
+                                \PYG{l+s}{\PYGZdq{}Hexdump of bytes received by C program, minus header:}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+                \PYG{n}{hexdump}\PYG{p}{(}\PYG{n}{buf}\PYG{p}{,} \PYG{n}{rd}\PYG{p}{);}
+
+                \PYG{k}{switch} \PYG{p}{(}\PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{])} \PYG{p}{\PYGZob{}}
+                \PYG{k}{case} \PYG{l+m+mi}{1}\PYG{o}{:} \PYG{p}{\PYGZob{}}
+                        \PYG{k+kt}{int} \PYG{n}{len\PYGZus{}x} \PYG{o}{=} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{];}
+                        \PYG{n}{assert}\PYG{p}{((}\PYG{k+kt}{size\PYGZus{}t}\PYG{p}{)} \PYG{n}{len\PYGZus{}x} \PYG{o}{\PYGZlt{}} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{long}\PYG{p}{));}
+                        \PYG{k+kt}{int} \PYG{n}{x} \PYG{o}{=} \PYG{n}{decode\PYGZus{}le}\PYG{p}{(}\PYG{n}{buf} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{len\PYGZus{}x}\PYG{p}{);}
+                        \PYG{k+kt}{int} \PYG{n}{len\PYGZus{}y} \PYG{o}{=} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{2} \PYG{o}{+} \PYG{n}{len\PYGZus{}x}\PYG{p}{];}
+                        \PYG{n}{assert}\PYG{p}{((}\PYG{k+kt}{size\PYGZus{}t}\PYG{p}{)} \PYG{n}{len\PYGZus{}y} \PYG{o}{\PYGZlt{}} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{long}\PYG{p}{));}
+                        \PYG{k+kt}{int} \PYG{n}{y} \PYG{o}{=} \PYG{n}{decode\PYGZus{}le}\PYG{p}{(}\PYG{n}{buf} \PYG{o}{+} \PYG{l+m+mi}{3} \PYG{o}{+} \PYG{n}{len\PYGZus{}x}\PYG{p}{,} \PYG{n}{len\PYGZus{}y}\PYG{p}{);}
+
+                        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                                \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,}
+                                        \PYG{l+s}{\PYGZdq{}Decoded sum(\PYGZpc{}d, \PYGZpc{}d), returning \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+                                        \PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{,} \PYG{n}{x} \PYG{o}{+} \PYG{n}{y}\PYG{p}{);}
+                        \PYG{p}{\PYGZcb{}}
+                        \PYG{n}{write\PYGZus{}result}\PYG{p}{(}\PYG{n}{x} \PYG{o}{+} \PYG{n}{y}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}} \PYG{k}{break}\PYG{p}{;}
+
+                \PYG{k}{case} \PYG{l+m+mi}{2}\PYG{o}{:} \PYG{p}{\PYGZob{}}
+                        \PYG{k+kt}{int} \PYG{n}{len\PYGZus{}x} \PYG{o}{=} \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{];}
+                        \PYG{n}{assert}\PYG{p}{((}\PYG{k+kt}{size\PYGZus{}t}\PYG{p}{)} \PYG{n}{len\PYGZus{}x} \PYG{o}{\PYGZlt{}} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{long}\PYG{p}{));}
+                        \PYG{k+kt}{int} \PYG{n}{x} \PYG{o}{=} \PYG{n}{decode\PYGZus{}le}\PYG{p}{(}\PYG{n}{buf} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{len\PYGZus{}x}\PYG{p}{);}
+
+                        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                                \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,}
+                                        \PYG{l+s}{\PYGZdq{}Decoded twice(\PYGZpc{}d), returning \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+                                        \PYG{n}{x}\PYG{p}{,} \PYG{n}{x} \PYG{o}{\PYGZlt{}\PYGZlt{}} \PYG{l+m+mi}{1}\PYG{p}{);}
+                        \PYG{p}{\PYGZcb{}}
+                        \PYG{n}{write\PYGZus{}result}\PYG{p}{(}\PYG{n}{x} \PYG{o}{\PYGZlt{}\PYGZlt{}} \PYG{l+m+mi}{1}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}} \PYG{k}{break}\PYG{p}{;}
+
+                \PYG{k}{default}\PYG{o}{:}
+                        \PYG{k}{if} \PYG{p}{(}\PYG{n}{DEBUG}\PYG{p}{)} \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,}
+                                           \PYG{l+s}{\PYGZdq{}Unrecognized function received through pipe: \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+                                           \PYG{n}{buf}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]);}
+                \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

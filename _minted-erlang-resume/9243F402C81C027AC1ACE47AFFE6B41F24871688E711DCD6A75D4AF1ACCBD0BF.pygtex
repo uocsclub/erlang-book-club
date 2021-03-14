@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{case} \PYG{n+nv}{Expr} \PYG{k}{of}
+    \PYG{n+nv}{Pattern1} \PYG{k}{when} \PYG{n+nv}{Guard} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{result}\PYG{p}{;}
+    \PYG{n+nv}{Pattern2} \PYG{k}{when} \PYG{n+nv}{Guard2} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{result}
+\PYG{k}{end}
+\end{Verbatim}

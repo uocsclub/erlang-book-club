@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{module}\PYG{p}{(}\PYG{n}{person}\PYG{p}{).}
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{export}\PYG{p}{([}\PYG{n}{func}\PYG{o}{/}\PYG{l+m+mi}{1}\PYG{p}{]).}
+
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n+nv}{Arg}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{p}{...}
+\end{Verbatim}

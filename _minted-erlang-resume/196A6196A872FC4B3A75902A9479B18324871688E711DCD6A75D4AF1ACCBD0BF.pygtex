@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{receive}
+    \PYG{p}{\PYGZob{}}\PYG{n+nv}{Port}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{data}\PYG{p}{,} \PYG{n+nv}{Data}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+\end{Verbatim}

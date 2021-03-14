@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{call}\PYG{p}{(}\PYG{n+nv}{Node}\PYG{p}{,} \PYG{n+nv}{M}\PYG{p}{,} \PYG{n+nv}{F}\PYG{p}{,} \PYG{n+nv}{A}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nv}{Result} \PYG{p}{|} \PYG{p}{\PYGZob{}}\PYG{n}{badrpc}\PYG{p}{,} \PYG{n+nv}{Reason}\PYG{p}{\PYGZcb{}.}
+\end{Verbatim}

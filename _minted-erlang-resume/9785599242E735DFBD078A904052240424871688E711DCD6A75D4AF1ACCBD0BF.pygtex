@@ -1,0 +1,35 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+m+mi}{46}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{start}\PYG{p}{().}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{start}\PYG{p}{().}
+\PYG{n}{true}
+\PYG{l+m+mi}{47}\PYG{o}{\PYGZgt{}} \PYG{n}{starting} \PYG{n}{external} \PYG{n}{program}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{sum}\PYG{p}{(}\PYG{l+m+mi}{11002}\PYG{p}{,} \PYG{l+m+mi}{1234}\PYG{p}{).}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{sum}\PYG{p}{(}\PYG{l+m+mi}{11002}\PYG{p}{,} \PYG{l+m+mi}{1234}\PYG{p}{).}
+\PYG{n+nv}{Hexdump} \PYG{k}{of} \PYG{n}{bytes} \PYG{n}{received} \PYG{n}{by} \PYG{n+nv}{C} \PYG{n}{program}\PYG{p}{,} \PYG{n}{minus} \PYG{n+nn}{header}\PYG{p}{:}
+\PYG{l+m+mi}{01} \PYG{l+m+mi}{02} \PYG{n}{fa} \PYG{l+m+mi}{2}\PYG{n}{a} \PYG{l+m+mi}{02} \PYG{n}{d2} \PYG{l+m+mi}{04}
+\PYG{n+nv}{C} \PYG{n}{program} \PYG{n}{sending} \PYG{n}{the} \PYG{n}{following} \PYG{n}{bytes} \PYG{n}{to} \PYG{n}{erlang} \PYG{p}{(}\PYG{n}{with} \PYG{n}{header}\PYG{p}{):}
+\PYG{l+m+mi}{00} \PYG{l+m+mi}{03} \PYG{l+m+mi}{02} \PYG{n}{cc} \PYG{l+m+mi}{2}\PYG{n}{f}
+\PYG{l+m+mi}{12236}
+\PYG{l+m+mi}{48}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{sum}\PYG{p}{(}\PYG{l+m+mi}{1234}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{).}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{sum}\PYG{p}{(}\PYG{l+m+mi}{1234}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{).}
+\PYG{n+nv}{Hexdump} \PYG{k}{of} \PYG{n}{bytes} \PYG{n}{received} \PYG{n}{by} \PYG{n+nv}{C} \PYG{n}{program}\PYG{p}{,} \PYG{n}{minus} \PYG{n+nn}{header}\PYG{p}{:}
+\PYG{l+m+mi}{01} \PYG{l+m+mi}{02} \PYG{n}{d2} \PYG{l+m+mi}{04} \PYG{l+m+mi}{01} \PYG{l+m+mi}{01}
+\PYG{n+nv}{C} \PYG{n}{program} \PYG{n}{sending} \PYG{n}{the} \PYG{n}{following} \PYG{n}{bytes} \PYG{n}{to} \PYG{n}{erlang} \PYG{p}{(}\PYG{n}{with} \PYG{n}{header}\PYG{p}{):}
+\PYG{l+m+mi}{00} \PYG{l+m+mi}{03} \PYG{l+m+mi}{02} \PYG{n}{d3} \PYG{l+m+mi}{04}
+\PYG{l+m+mi}{1235}
+\PYG{l+m+mi}{49}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{twice}\PYG{p}{(}\PYG{l+m+mi}{1234}\PYG{p}{).}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{twice}\PYG{p}{(}\PYG{l+m+mi}{1234}\PYG{p}{).}
+\PYG{n+nv}{Hexdump} \PYG{k}{of} \PYG{n}{bytes} \PYG{n}{received} \PYG{n}{by} \PYG{n+nv}{C} \PYG{n}{program}\PYG{p}{,} \PYG{n}{minus} \PYG{n+nn}{header}\PYG{p}{:}
+\PYG{l+m+mi}{02} \PYG{l+m+mi}{02} \PYG{n}{d2} \PYG{l+m+mi}{04}
+\PYG{n+nv}{C} \PYG{n}{program} \PYG{n}{sending} \PYG{n}{the} \PYG{n}{following} \PYG{n}{bytes} \PYG{n}{to} \PYG{n}{erlang} \PYG{p}{(}\PYG{n}{with} \PYG{n}{header}\PYG{p}{):}
+\PYG{l+m+mi}{00} \PYG{l+m+mi}{03} \PYG{l+m+mi}{02} \PYG{n}{a4} \PYG{l+m+mi}{09}
+\PYG{l+m+mi}{2468}
+\PYG{l+m+mi}{50}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{twice}\PYG{p}{(}\PYG{l+m+mi}{123589724}\PYG{p}{).}
+\PYG{n+nn}{interface}\PYG{p}{:}\PYG{n+nf}{twice}\PYG{p}{(}\PYG{l+m+mi}{123589724}\PYG{p}{).}
+\PYG{n+nv}{Hexdump} \PYG{k}{of} \PYG{n}{bytes} \PYG{n}{received} \PYG{n}{by} \PYG{n+nv}{C} \PYG{n}{program}\PYG{p}{,} \PYG{n}{minus} \PYG{n+nn}{header}\PYG{p}{:}
+\PYG{l+m+mi}{02} \PYG{l+m+mi}{04} \PYG{l+m+mi}{5}\PYG{n}{c} \PYG{n}{d4} \PYG{l+m+mi}{5}\PYG{n}{d} \PYG{l+m+mi}{07}
+\PYG{n+nv}{C} \PYG{n}{program} \PYG{n}{sending} \PYG{n}{the} \PYG{n}{following} \PYG{n}{bytes} \PYG{n}{to} \PYG{n}{erlang} \PYG{p}{(}\PYG{n}{with} \PYG{n}{header}\PYG{p}{):}
+\PYG{l+m+mi}{00} \PYG{l+m+mi}{05} \PYG{l+m+mi}{04} \PYG{n}{b8} \PYG{n}{a8} \PYG{n}{bb} \PYG{l+m+mi}{0}\PYG{n}{e}
+\PYG{l+m+mi}{247179448}
+\PYG{l+m+mi}{51}\PYG{o}{\PYGZgt{}}
+\end{Verbatim}

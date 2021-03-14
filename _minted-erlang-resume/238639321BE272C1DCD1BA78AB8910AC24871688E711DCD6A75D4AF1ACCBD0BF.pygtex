@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{clear\PYGZus{}status}\PYG{p}{(}\PYG{n+nl}{\PYGZsh{}todo}\PYG{p}{\PYGZob{}}\PYG{n}{status}\PYG{o}{=}\PYG{n+nv}{S}\PYG{p}{,} \PYG{n}{who}\PYG{o}{=}\PYG{n+nv}{W}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n+nv}{R}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{}\PYGZpc{} Inside this function S and W are bound to the field}
+    \PYG{c}{\PYGZpc{}\PYGZpc{} values in the record}
+    \PYG{c}{\PYGZpc{}\PYGZpc{}}
+    \PYG{c}{\PYGZpc{}\PYGZpc{} R is the *entire* record}
+    \PYG{n+nv}{R}\PYG{n+nl}{\PYGZsh{}todo}\PYG{p}{\PYGZob{}}\PYG{n}{status}\PYG{o}{=}\PYG{n}{finished}\PYG{p}{\PYGZcb{}.}
+\end{Verbatim}

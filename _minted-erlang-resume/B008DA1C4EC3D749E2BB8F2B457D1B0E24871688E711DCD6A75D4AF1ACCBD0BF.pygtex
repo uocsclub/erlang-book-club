@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZob{}}\PYG{n}{port}\PYG{p}{,} \PYG{l+m+mi}{1234}\PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZob{}}\PYG{n}{service}\PYG{p}{,} \PYG{n}{nameServer}\PYG{p}{,} \PYG{n}{password}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}thisisaverysecurepassword\PYGZdq{}}\PYG{p}{,}
+ \PYG{n}{mfa}\PYG{p}{,} \PYG{n}{mod\PYGZus{}name\PYGZus{}server}\PYG{p}{,} \PYG{n}{start\PYGZus{}me\PYGZus{}up}\PYG{p}{,} \PYG{n}{notUsed}\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

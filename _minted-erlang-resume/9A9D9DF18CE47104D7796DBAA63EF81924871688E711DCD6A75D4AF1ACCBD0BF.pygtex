@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{o}{\PYGZgt{}}\PYG{n+nb}{spawn}\PYG{p}{(}\PYG{n}{person}\PYG{p}{,} \PYG{n}{func}\PYG{p}{,} \PYG{p}{[}\PYG{l+s}{\PYGZdq{}Arg\PYGZdq{}}\PYG{p}{]).}
+\end{Verbatim}

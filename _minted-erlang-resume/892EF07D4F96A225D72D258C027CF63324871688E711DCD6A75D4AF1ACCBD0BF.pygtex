@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{receive}
+    \PYG{p}{\PYGZob{}}\PYG{n}{some\PYGZus{}identifier}\PYG{p}{,} \PYG{n+nv}{Array}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{p}{...,}
+\PYG{k}{end}
+\end{Verbatim}

@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{pythag}\PYG{p}{(}\PYG{n+nv}{N}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{p}{[\PYGZob{}}\PYG{n+nv}{A}\PYG{p}{,} \PYG{n+nv}{B}\PYG{p}{,} \PYG{n+nv}{C}\PYG{p}{\PYGZcb{}} \PYG{p}{||}
+        \PYG{n+nv}{A} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nn}{lists}\PYG{p}{:}\PYG{n+nf}{seq}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n+nv}{N}\PYG{p}{),}
+        \PYG{n+nv}{B} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nn}{lists}\PYG{p}{:}\PYG{n+nf}{seq}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n+nv}{N}\PYG{p}{),}
+        \PYG{n+nv}{C} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nn}{lists}\PYG{p}{:}\PYG{n+nf}{seq}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n+nv}{N}\PYG{p}{),}
+        \PYG{n+nv}{A} \PYG{o}{+} \PYG{n+nv}{B} \PYG{o}{+} \PYG{n+nv}{C} \PYG{o}{=\PYGZlt{}} \PYG{n+nv}{N}\PYG{p}{,}
+        \PYG{n+nv}{A}\PYG{o}{*}\PYG{n+nv}{A} \PYG{o}{+} \PYG{n+nv}{B}\PYG{o}{*}\PYG{n+nv}{B} \PYG{o}{=:=} \PYG{n+nv}{C}\PYG{o}{*}\PYG{n+nv}{C}\PYG{p}{].}
+\end{Verbatim}

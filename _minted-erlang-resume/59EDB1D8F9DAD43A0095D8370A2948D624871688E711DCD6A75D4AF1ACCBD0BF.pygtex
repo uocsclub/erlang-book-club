@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{connect}\PYG{p}{(}\PYG{n+nv}{Host}\PYG{p}{,} \PYG{l+m+mi}{1234}\PYG{p}{,} \PYG{n}{nameServer}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}thisisaverysecurepassword\PYGZdq{}}\PYG{p}{,} \PYG{n}{nil}\PYG{p}{).}
+\end{Verbatim}

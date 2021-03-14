@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZpc{} when declaring a new map:}
+\PYG{n+nv}{M} \PYG{o}{=} \PYG{p}{\PYGZsh{}\PYGZob{}}\PYG{n}{a} \PYG{o}{=\PYGZgt{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{b} \PYG{o}{=\PYGZgt{}} \PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}.}
+\PYG{c}{\PYGZpc{} To update this we need to assign a new map to a new variable (this}
+\PYG{c}{\PYGZpc{} updates a to 2 in map M, and assigns it to N, without changing M)}
+\PYG{n+nv}{N} \PYG{o}{=} \PYG{n+nv}{M}\PYG{p}{\PYGZsh{}\PYGZob{}}\PYG{n}{a} \PYG{p}{:}\PYG{o}{=} \PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}.}
+\PYG{c}{\PYGZpc{} of course we can also pattern match on maps:}
+\PYG{p}{\PYGZsh{}\PYGZob{}}\PYG{n}{key} \PYG{o}{=} \PYG{n+nv}{Val}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n+nv}{SomeMap}\PYG{p}{.}
+\end{Verbatim}

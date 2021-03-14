@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{spawn\PYGZus{}link}\PYG{p}{(}\PYG{n+nv}{Node}\PYG{p}{,} \PYG{n+nv}{Fun}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nv}{Pid}\PYG{p}{.}
+\PYG{n+nb}{spawn\PYGZus{}link}\PYG{p}{(}\PYG{n+nv}{Node}\PYG{p}{,} \PYG{n+nv}{M}\PYG{p}{,} \PYG{n+nv}{F}\PYG{p}{,} \PYG{n+nv}{A}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nv}{Pid}\PYG{p}{.}
+
+\PYG{n+nb}{spawn\PYGZus{}monitor}\PYG{p}{(}\PYG{n+nv}{Node}\PYG{p}{,} \PYG{n+nv}{Fun}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{p}{\PYGZob{}}\PYG{n+nv}{Pid}\PYG{p}{,} \PYG{n+nv}{Ref}\PYG{p}{\PYGZcb{}.}
+\PYG{n+nb}{spawn\PYGZus{}monitor}\PYG{p}{(}\PYG{n+nv}{Node}\PYG{p}{,} \PYG{n+nv}{M}\PYG{p}{,} \PYG{n+nv}{F}\PYG{p}{,} \PYG{n+nv}{A}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{p}{\PYGZob{}}\PYG{n+nv}{Pid}\PYG{p}{,} \PYG{n+nv}{Ref}\PYG{p}{\PYGZcb{}.}
+\end{Verbatim}
