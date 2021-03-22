@@ -2,17 +2,20 @@
 -compile(export_all).
 % -export([]).
 
--record(torrent, {announce, files, name, piece_len, pieces}).
+-record(torrent, {announce, files, name, piece_len, pieces, info_hash}).
 
 %% This loads a torrent file and sets the record appropriately
 load_torrent(FileRef) ->
     {<<>>, D} = benc:decode(FileRef),
     Info = get_assoc(<<"info">>, hd(D)),
-    #torrent{announce = get_assoc(<<"announce">>, hd(D)),
+    %% Info_hash = info_hash(FileRef),
+    {D, {#torrent{announce = get_assoc(<<"announce">>, hd(D)),
              files = files(Info),
              name = get_assoc(<<"name">>, Info),
              piece_len = get_assoc(<<"piece length">>, Info),
-             pieces = split_hashes(get_assoc(<<"pieces">>, Info))}.
+             pieces = split_hashes(get_assoc(<<"pieces">>, Info))
+                 %% , info_hash = Info_hash
+                 }}}.
 
 %% This is to differentiate between when a torrent is a single file
 %% and when it is multiple files
@@ -43,4 +46,3 @@ split_hashes(<<First:20/binary, Rest/binary>>, Acc) ->
     split_hashes(Rest, [First | Acc]);
 split_hashes(<<>>, Acc) ->
     lists:reverse(Acc).
-

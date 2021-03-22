@@ -1,7 +1,6 @@
 -module(benc).
 %% -compile(export_all).
--export([decode/1]).
-
+-export([decode/1, encode/1, encode_item/1]).
 
 decode(Bin) when is_binary(Bin) ->
     parse_loop(Bin);
@@ -63,11 +62,55 @@ le_altoi([H|T], Acc, Exp) ->
 le_altoi([], Acc, _exp) ->
     Acc.
 
-% This is to compute integer powers because erlang can't do that lol
+%% This is to compute integer powers because erlang can't do that lol
 pow(_, 0) -> 1;
 pow(A, 1) -> A;
 pow(A, N) -> A * pow(A, N-1).
 
+%% This section does encoding of the representation that I made for
+%% bencoded data above.
 
-    
-    
+%% fUnCtIoNaL pRoGraMmInG
+encode_dict(L) -> 
+    <<$d,
+      (lists:foldl(
+         fun(A, Bin) ->
+                 <<Bin/binary, A/binary>>
+         end,
+         <<>>,
+         lists:map(fun
+                       ({K, V}) -> 
+                           <<(encode_item(K))/binary, (encode_item(V))/binary>>
+                   end, 
+                   L)
+        ))/binary,
+      $e>>.
+
+encode_bin(B) -> <<(integer_to_binary(byte_size(B)))/binary, $:, B/binary>>.
+
+encode_list(L) -> 
+    <<$l, 
+      (list_to_binary(lists:map(fun(X) -> encode_item(X) end, L)))/binary, 
+      $e>>.
+
+encode_int(I) -> 
+    <<$i, (integer_to_binary(I))/binary, $e>>.
+
+encode_item(X) ->
+    if
+        is_list(X), length(X) > 0 andalso is_tuple(hd(X)), size(hd(X)) =:= 2 ->
+            encode_dict(X); 
+        is_list(X) ->
+            encode_list(X);
+        is_binary(X) ->
+            encode_bin(X);
+        is_integer(X) ->
+            encode_int(X)
+    end.
+
+encode(L) ->
+    encode(L, []).
+encode([], Acc) ->
+    list_to_binary(lists:reverse(Acc));
+encode([H|T], Acc) ->
+    encode(T, [encode_item(H) | Acc]).
