@@ -1354,7 +1354,7 @@
              {?MODULE, Result} ->
                  Result
          end.
-    
+
      loop(Port) ->
          receive
              {call, Caller, Msg} ->
