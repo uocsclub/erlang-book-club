@@ -70,6 +70,10 @@ pow(A, N) -> A * pow(A, N-1).
 %% This section does encoding of the representation that I made for
 %% bencoded data above.
 
+%% WARNING: I think the bencode specification requires that keys are
+%% in lexographic order. This does not check to make sure the keys are
+%% in lexographic order for a dictionary.
+
 %% fUnCtIoNaL pRoGraMmInG
 encode_dict(L) -> 
     <<$d,

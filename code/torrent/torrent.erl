@@ -8,13 +8,12 @@
 load_torrent(FileRef) ->
     {<<>>, D} = benc:decode(FileRef),
     Info = get_assoc(<<"info">>, hd(D)),
-    %% Info_hash = info_hash(FileRef),
     {D, {#torrent{announce = get_assoc(<<"announce">>, hd(D)),
-             files = files(Info),
-             name = get_assoc(<<"name">>, Info),
-             piece_len = get_assoc(<<"piece length">>, Info),
-             pieces = split_hashes(get_assoc(<<"pieces">>, Info))
-                 %% , info_hash = Info_hash
+                  files = files(Info),
+                  name = get_assoc(<<"name">>, Info),
+                  piece_len = get_assoc(<<"piece length">>, Info),
+                  pieces = split_hashes(get_assoc(<<"pieces">>, Info)), 
+                  info_hash = crypto:hash(sha, benc:encode_item([{<<"info">>, Info}]))
                  }}}.
 
 %% This is to differentiate between when a torrent is a single file
