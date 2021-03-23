@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+m+mi}{15}\PYG{o}{\PYGZgt{}} \PYG{p}{\PYGZob{}}\PYG{n}{ok}\PYG{p}{,} \PYG{n+nv}{S}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n+nn}{file}\PYG{p}{:}\PYG{n+nf}{open}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}./asdf\PYGZdq{}}\PYG{p}{,} \PYG{n}{read}\PYG{p}{).}
+\PYG{p}{\PYGZob{}}\PYG{n}{ok}\PYG{p}{,} \PYG{n+nv}{S}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{n+nn}{file}\PYG{p}{:}\PYG{n+nf}{open}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}./asdf\PYGZdq{}}\PYG{p}{,} \PYG{n}{read}\PYG{p}{).}
+\PYG{p}{\PYGZob{}}\PYG{n}{ok}\PYG{p}{,}\PYG{o}{\PYGZlt{}}\PYG{l+m+mi}{0}\PYG{p}{.}\PYG{l+m+mi}{102}\PYG{p}{.}\PYG{l+m+mi}{0}\PYG{o}{\PYGZgt{}}\PYG{p}{\PYGZcb{}}
+\PYG{l+m+mi}{16}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{l+s}{\PYGZdq{}\PYGZob{}lets, say, i, have\PYGZcb{}.}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}
+\PYG{l+m+mi}{17}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{l+s}{\PYGZdq{}\PYGZob{}some, \PYGZob{}tuples, in\PYGZcb{}, \PYGZob{}this, file, \PYGZob{}and\PYGZus{}\PYGZcb{}\PYGZcb{}, id, like, to, read, [them]\PYGZcb{}.\PYGZdq{}}
+\PYG{l+m+mi}{18}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{get\PYGZus{}line}\PYG{p}{(}\PYG{n+nv}{S}\PYG{p}{,} \PYG{err}{\PYGZsq{}\PYGZsq{}}\PYG{p}{).}
+\PYG{n}{eof}
+\end{Verbatim}

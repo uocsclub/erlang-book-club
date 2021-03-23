@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nv}{Format}                             \PYG{n+nv}{Result}
+\PYG{o}{======}                             \PYG{o}{======}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}|}\PYG{l+s+si}{\PYGZti{}10s}\PYG{l+s}{|\PYGZdq{}}\PYG{p}{,[}\PYG{l+s}{\PYGZdq{}abc\PYGZdq{}}\PYG{p}{])}        \PYG{p}{|}       \PYG{n}{abc}\PYG{p}{|}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}|\PYGZti{}\PYGZhy{}10s|\PYGZdq{}}\PYG{p}{,[}\PYG{l+s}{\PYGZdq{}abc\PYGZdq{}}\PYG{p}{])}       \PYG{p}{|}\PYG{n}{abc}       \PYG{p}{|}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}|}\PYG{l+s+si}{\PYGZti{}10.3.+}\PYG{l+s}{s|\PYGZdq{}}\PYG{p}{,[}\PYG{l+s}{\PYGZdq{}abc\PYGZdq{}}\PYG{p}{])}    \PYG{p}{|}\PYG{o}{+++++++}\PYG{n}{abc}\PYG{p}{|}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}|\PYGZti{}\PYGZhy{}10.10.+s|\PYGZdq{}}\PYG{p}{,[}\PYG{l+s}{\PYGZdq{}abc\PYGZdq{}}\PYG{p}{])}  \PYG{p}{|}\PYG{n}{abc}\PYG{o}{+++++++}\PYG{p}{|}
+\PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}|}\PYG{l+s+si}{\PYGZti{}10.7.+}\PYG{l+s}{s|\PYGZdq{}}\PYG{p}{,[}\PYG{l+s}{\PYGZdq{}abc\PYGZdq{}}\PYG{p}{])}    \PYG{p}{|}\PYG{o}{+++}\PYG{n}{abc}\PYG{o}{++++}\PYG{p}{|}
+\end{Verbatim}

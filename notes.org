@@ -2019,3 +2019,194 @@
      247179448
      51> 
    #+end_src
+* Eighth Day
+  Today we're working with files. There's slightly more here than
+  meets the eye, because instead of just working with files, we're
+  learning how to work with byte/bit streams. Erlang has great support
+  for this, and once you get up to speed, you can write less buggy and
+  more consise code for interacting with bytestreams. (Plus, I can
+  imagine how this might be compiled and ran, so I haven't ran any
+  benchmarks, but I think it might be quite fast).
+
+** Modules you gotta know
+   - ~file~ is the module that contains the normal file i/o. Opening,
+     closing, reading, writing, ls, etc.
+   - ~filename~ is for reading and writing the names of directories
+     and files in a platform-agnostic way.
+   - ~filelib~ is for more advanced and high-level file operations
+   - ~io~ does the actual io (although you don't need to use it to do
+     file i/o, ~file~ has all you technically need). It contains
+     routines for parsing and writing formatted data.
+
+** Reading files
+   There's a few ways you can read files. Here is one.
+   #+begin_src erlang
+     {lets, say, i, have}.
+     {some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}.
+   #+end_src
+   Let's say this is in a file called ~asdf~, we can read the list of
+   erlang-formatted terms within by calling ~file:consult~
+   #+begin_src erlang
+     1> file:consult("./asdf").
+     {ok,[{lets,say,i,have},
+          {some,{tuples,in},
+                {this,file,{and_}},
+                id,like,to,read,
+                [them]}]}
+   #+end_src
+   
+*** More reading
+    If we wanted to read the terms one by one, we could use ~io:read~. 
+    
+    #+begin_src erlang
+      9> {ok, S} = file:open("./asdf", read).
+      {ok, S} = file:open("./asdf", read).
+      {ok,<0.95.0>}
+      10> io:read(S, '').
+      io:read(S, '').
+      {ok,{lets,say,i,have}}
+      11> io:read(S, '').
+      io:read(S, '').
+      {ok,{some,{tuples,in},
+                {this,file,{and_}},
+                id,like,to,read,
+                [them]}}
+      12> io:read(S, '').
+      io:read(S, '').
+      eof
+      13> file:close(S).
+      file:close(S).
+      ok
+    #+end_src
+    
+    If we wanted to read the file line by line, we could use ~io:get_line~.
+    #+begin_src erlang
+      15> {ok, S} = file:open("./asdf", read).
+      {ok, S} = file:open("./asdf", read).
+      {ok,<0.102.0>}
+      16> io:get_line(S, '').
+      io:get_line(S, '').
+      "{lets, say, i, have}.\n"
+      17> io:get_line(S, '').
+      io:get_line(S, '').
+      "{some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}."
+      18> io:get_line(S, '').
+      io:get_line(S, '').
+      eof
+    #+end_src
+
+*** Reading with pread
+    You can also use pread to do random access in a file. After
+    opening a file with ~raw~, as shown, you can use ~file:pread~ to
+    read a specified number of bytes starting at a specified offset.
+    #+begin_src erlang
+      19> {ok, F} = file:open("./asdf", [read, binary, raw]).
+      {ok, F} = file:open("./asdf", [read, binary, raw]).
+      {ok,{file_descriptor,prim_file,
+                           #{handle => #Ref<0.3399782956.215089163.90801>,
+                             owner => <0.81.0>,r_ahead_size => 0,
+                             r_buffer => #Ref<0.3399782956.215089154.90797>}}}
+      20> file:pread(F, 10, 10).
+      file:pread(F, 10, 10).
+      {ok,<<", i, have}">>}
+      21> file:pread(F, 20, 10).
+      file:pread(F, 20, 10).
+      {ok,<<".\n{some, {">>}
+      22> file:pread(F, 10, 20).
+      file:pread(F, 10, 20).
+      {ok,<<", i, have}.\n{some, {">>}
+      23> file:pread(F, 15, 50).
+      file:pread(F, 15, 50).
+      {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, ">>}
+      24> file:pread(F, 15, 100).
+      file:pread(F, 15, 100).
+      {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}.">>}
+      25> file:pread(F, 15, 200).
+      file:pread(F, 15, 200).
+      {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}.">>}
+      2
+    #+end_src
+    
+*** Reading and writing entire files with binaries
+    Erlang has a really cool built-in data structure called a Binary.
+   
+    you can use ~file:read_file~ to read an entire file into a binary
+    string atomically. This is by far the most efficient way, and so
+    can be used to great effect.
+
+    This is how I do the file i/o in the bencode parser that I wrote
+    earlier which you can find in [[./code/torrent/benc.erl]].
+
+   
+** Writing files
+   The most commonly used bif to create formatted output is
+   ~io:format~. ~io:format~ is the 'common' printf just like in other
+   languages, but with slightly different format string syntax.
+   
+   You can call it as
+   #+begin_src erlang
+     -spec io:format(IODevice, Format, Args) -> ok.
+   #+end_src
+   ~IODevice~ in this case is a device which you have opened in write
+   mode. You can also product strings by calling it without an
+   ~IODevice~.
+   
+   Here are some format options you can use:
+   - ~~n~ Write a line feed. This does the right thing on various
+     platforms (CLRF on windows)
+   - ~~p~ Pretty-print the argument
+   - ~~s~ When the arg is either a string or IO List (which is a
+     list of strings or bytes or binaries afaik), this will print it
+     without any quotation marks.
+   - ~~w~ Write data with the standard syntax. You use this to output
+     erlang terms.
+
+   There's more here than meets the eye, as these can also take extra
+   arguments, but we can't cover them all here:
+   #+begin_src erlang
+     Format                             Result
+     ======                             ======
+     io:format("|~10s|",["abc"])        |       abc|
+     io:format("|~-10s|",["abc"])       |abc       |
+     io:format("|~10.3.+s|",["abc"])    |+++++++abc|
+     io:format("|~-10.10.+s|",["abc"])  |abc+++++++|
+     io:format("|~10.7.+s|",["abc"])    |+++abc++++|
+   #+end_src
+   These are copy pasted from the book. Pls don't sue me.
+   
+** ~file:write_file~
+   ~file:write_file(File, IO)~ deserves its own section, because it is
+   fast, atomic, and easy. ~File~ is a file, and ~IO~ is an I/O list,
+   which is a list of binaries, integers from 0 to 255 (bytes), or
+   other I/O lists (this includes strings). When you pass a deeply
+   nested list, it is flattened without you having to do anything
+   about it. This is very helpful as shown again in the bencode parser
+   in [[./code/torrent/benc.erl]].
+   
+** Directory operations
+   To operate on directories, erlang gives us ~list_dir~, ~make_dir~
+   and ~del_dir~. They all do what you'd expect.
+   
+   
+*** File info
+    To find info about a file, we call ~file:read_file_info~ which
+    returns ~{ok, Info}~ on success. Info then returns a ~#file_info~
+    struct.
+    
+    To access this, I think you need to include the
+    ~"kernel/include/file.hrl"~ to import the ~#file_info~ record.
+    
+    Otherwise, it works exactly as you'd expect. 
+    
+    Go read the docs or source if you want to know what information is
+    exposed here. It's not terribly exciting, so I won't discuss it
+    here, but everything you'd need is here.
+    
+*** Copy and delete
+    ~file:copy(Source, Dest)~ copies Source to Dest and
+    ~file:delete(Dest)~ deletes Dest.
+    
+    
+** Let's clone ~find~ as an exercise.
+    
+   
