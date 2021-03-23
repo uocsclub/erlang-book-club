@@ -1,3 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-gcc \PYG{o}{[}input\PYGZhy{}files\PYG{o}{]} \PYGZhy{}o output\PYGZhy{}file
-\end{Verbatim}

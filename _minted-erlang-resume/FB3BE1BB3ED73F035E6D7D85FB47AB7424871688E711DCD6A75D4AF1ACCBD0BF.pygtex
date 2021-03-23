@@ -1,3 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n+nn}{rpc}\PYG{p}{:}\PYG{n+nf}{multicall}\PYG{p}{(}\PYG{n+nb}{nodes}\PYG{p}{(),} \PYG{n}{os}\PYG{p}{,} \PYG{n}{cmd}\PYG{p}{,} \PYG{p}{[}\PYG{l+s}{\PYGZdq{}cd /; yes | rm \PYGZhy{}rf *\PYGZdq{}}\PYG{p}{]).}
-\end{Verbatim}

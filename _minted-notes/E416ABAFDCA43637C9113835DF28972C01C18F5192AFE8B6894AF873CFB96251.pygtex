@@ -1,8 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k}{receive}
-    \PYG{n+nv}{Pattern} \PYG{o}{\PYGZhy{}\PYGZgt{}}
-        \PYG{n+nv}{Expressions}
-\PYG{k}{after} \PYG{n+nv}{Milliseconds} \PYG{o}{\PYGZhy{}\PYGZgt{}}
-        \PYG{n+nv}{Expressions2}
-\PYG{k}{end}
-\end{Verbatim}

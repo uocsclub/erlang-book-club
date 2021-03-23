@@ -1,9 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{c}{\PYGZpc{} this returns a record with the values expected.}
-\PYG{n+nl}{\PYGZsh{}todo}\PYG{p}{\PYGZob{}\PYGZcb{}.}
-\PYG{c}{\PYGZpc{} This binds X to a record with some values initialized.}
-\PYG{n+nv}{X} \PYG{o}{=} \PYG{n+nl}{\PYGZsh{}todo}\PYG{p}{\PYGZob{}}\PYG{n}{status} \PYG{o}{=} \PYG{n}{urgent}\PYG{p}{,} \PYG{n}{who} \PYG{o}{=} \PYG{n}{sean}\PYG{p}{,} \PYG{n}{text} \PYG{o}{=} \PYG{l+s}{\PYGZdq{}this is urgent\PYGZdq{}}\PYG{p}{\PYGZcb{}.}
-\PYG{c}{\PYGZpc{} This creates an entirely new record bound to Y, with the values}
-\PYG{c}{\PYGZpc{} found in X, replacing who = sean with who = joe.}
-\PYG{n+nv}{Y} \PYG{o}{=} \PYG{n+nv}{X}\PYG{n+nl}{\PYGZsh{}todo}\PYG{p}{\PYGZob{}}\PYG{n}{who} \PYG{o}{=} \PYG{n}{joe}\PYG{p}{\PYGZcb{}.}
-\end{Verbatim}

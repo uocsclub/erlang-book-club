@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-rooty\PYGZpc{} erl \PYGZhy{}name \PYG{n+nb}{test} \PYGZhy{}setcookie abc
-\PYG{l+m}{2021}\PYGZhy{}03\PYGZhy{}12 \PYG{l+m}{18}:43:46.334300
-    args: \PYG{o}{[]}
-    format: \PYG{l+s+s2}{\PYGZdq{}Can\PYGZsq{}t set long node name!\PYGZbs{}nPlease check your configuration\PYGZbs{}n\PYGZdq{}}
-    label: \PYG{o}{\PYGZob{}}error\PYGZus{}logger,info\PYGZus{}msg\PYG{o}{\PYGZcb{}}
-\end{Verbatim}

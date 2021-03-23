@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{p}{\PYGZhy{}}\PYG{n+ni}{record}\PYG{p}{(}\PYG{n+nl}{Name}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{key} \PYG{o}{=} \PYG{n}{value}\PYG{p}{,} \PYG{n}{key2} \PYG{o}{=} \PYG{n}{value2}\PYG{p}{,} \PYG{n}{key3}\PYG{p}{\PYGZcb{}).}
-\PYG{c}{\PYGZpc{} This defines a record called \PYGZsq{}todo\PYGZsq{} with default values reminder and}
-\PYG{c}{\PYGZpc{} joe for status and who, and a slot called \PYGZsq{}text\PYGZsq{} which is not}
-\PYG{c}{\PYGZpc{} initialized.}
-\PYG{p}{\PYGZhy{}}\PYG{n+ni}{record}\PYG{p}{(}\PYG{n+nl}{todo}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{status} \PYG{o}{=} \PYG{n}{reminder}\PYG{p}{,} \PYG{n}{who} \PYG{o}{=} \PYG{n}{joe}\PYG{p}{,} \PYG{n}{text}\PYG{p}{\PYGZcb{}).}
-\end{Verbatim}

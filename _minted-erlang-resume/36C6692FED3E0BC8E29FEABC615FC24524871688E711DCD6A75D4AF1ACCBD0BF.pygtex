@@ -1,3 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n+nv}{Pid} \PYG{o}{=} \PYG{n+nb}{spawn}\PYG{p}{(}\PYG{n+nv}{Fun}\PYG{p}{).}
-\end{Verbatim}

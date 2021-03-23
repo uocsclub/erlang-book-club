@@ -1,9 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{n}{george} \PYG{l+s+sc}{\PYGZdl{} }\PYG{n}{erl} \PYG{o}{\PYGZhy{}}\PYG{n}{name} \PYG{n}{bilbo} \PYG{o}{\PYGZhy{}}\PYG{n}{setcookie} \PYG{n}{abc}
-\PYG{p}{(}\PYG{n}{bilbo}\PYG{p}{@}\PYG{n}{george}\PYG{p}{.}\PYG{n}{myerl}\PYG{p}{.}\PYG{n}{example}\PYG{p}{.}\PYG{n}{com}\PYG{p}{)} \PYG{l+m+mi}{1}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{rpc}\PYG{p}{:}\PYG{n+nf}{call}\PYG{p}{(}\PYG{n}{gandalf}\PYG{p}{@}\PYG{n}{doris}\PYG{p}{.}\PYG{n}{myerl}\PYG{p}{.}\PYG{n}{example}\PYG{p}{.}\PYG{n}{com}\PYG{p}{,}
-                                             \PYG{n}{kvs}\PYG{p}{,}\PYG{n}{store}\PYG{p}{,[}\PYG{n}{weather}\PYG{p}{,}\PYG{n}{cold}\PYG{p}{]).}
-\PYG{n+nf}{true}
-\PYG{p}{(}\PYG{n}{bilbo}\PYG{p}{@}\PYG{n}{george}\PYG{p}{.}\PYG{n}{myerl}\PYG{p}{.}\PYG{n}{example}\PYG{p}{.}\PYG{n}{com}\PYG{p}{)} \PYG{l+m+mi}{2}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{rpc}\PYG{p}{:}\PYG{n+nf}{call}\PYG{p}{(}\PYG{n}{gandalf}\PYG{p}{@}\PYG{n}{doris}\PYG{p}{.}\PYG{n}{myerl}\PYG{p}{.}\PYG{n}{example}\PYG{p}{.}\PYG{n}{com}\PYG{p}{,}
-                                             \PYG{n}{kvs}\PYG{p}{,}\PYG{n}{lookup}\PYG{p}{,[}\PYG{n}{weather}\PYG{p}{]).}
-\PYG{p}{\PYGZob{}}\PYG{n}{ok}\PYG{p}{,}\PYG{n}{cold}\PYG{p}{\PYGZcb{}}
-\end{Verbatim}

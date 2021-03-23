@@ -1,4 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{l+s+sc}{\PYGZdl{} }\PYG{n}{erl} \PYG{o}{\PYGZhy{}}\PYG{n}{name} \PYG{p}{...} \PYG{o}{\PYGZhy{}}\PYG{n}{setcookie} \PYG{p}{...} \PYG{o}{\PYGZhy{}}\PYG{n}{kernel} \PYG{n}{inet\PYGZus{}dist\PYGZus{}listen\PYGZus{}min} \PYG{n+nv}{Min} \PYG{err}{\PYGZbs{}}
-                                       \PYG{n}{inet\PYGZus{}dist\PYGZus{}listen\PYGZus{}max} \PYG{n+nv}{Max}
-\end{Verbatim}
