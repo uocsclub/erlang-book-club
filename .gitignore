@@ -1,1 +1,3 @@
 *.beam
+_minted*
+auto
