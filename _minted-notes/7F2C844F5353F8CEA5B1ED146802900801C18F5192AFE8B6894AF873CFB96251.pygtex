@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{doris} \PYG{l+s+sc}{\PYGZdl{} }\PYG{n}{erl} \PYG{o}{\PYGZhy{}}\PYG{n}{name} \PYG{n}{gandalf} \PYG{o}{\PYGZhy{}}\PYG{n}{setcookie} \PYG{n}{abc}
+\PYG{p}{(}\PYG{n}{gandalf}\PYG{p}{@}\PYG{n}{doris}\PYG{p}{.}\PYG{n}{myerl}\PYG{p}{.}\PYG{n}{example}\PYG{p}{.}\PYG{n}{com}\PYG{p}{)} \PYG{l+m+mi}{1}\PYG{o}{\PYGZgt{}} \PYG{n+nn}{kvs}\PYG{p}{:}\PYG{n+nf}{start}\PYG{p}{().}
+\PYG{n}{true}
+\end{Verbatim}

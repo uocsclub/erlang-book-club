@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nv}{Name} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n+nv}{First}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{last\PYGZus{}name}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}Maher\PYGZdq{}}\PYG{p}{\PYGZcb{}\PYGZcb{}.}
+
+\PYG{o}{\PYGZgt{}}\PYG{n+nv}{Name}\PYG{p}{.}
+\PYG{p}{\PYGZob{}\PYGZob{}}\PYG{n}{first\PYGZus{}name}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}Sean\PYGZdq{}}\PYG{p}{\PYGZcb{},} \PYG{p}{\PYGZob{}}\PYG{n}{last\PYGZus{}name}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}Maher\PYGZdq{}}\PYG{p}{\PYGZcb{}\PYGZcb{}.}
+\end{Verbatim}

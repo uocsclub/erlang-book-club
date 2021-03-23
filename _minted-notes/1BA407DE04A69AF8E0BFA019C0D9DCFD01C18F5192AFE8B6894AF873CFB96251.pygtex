@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{if}
+    \PYG{n+nv}{Guard}\PYG{p}{,} \PYG{n+nv}{Guard2}\PYG{p}{,} \PYG{n+nv}{Guard3}\PYG{p}{;} \PYG{n+nv}{Guard4} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} (Guard AND Guard2 AND Guard3) OR Guard4}
+        \PYG{n+nv}{Something}\PYG{p}{;}
+    \PYG{n+nv}{Guard2} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n+nv}{Somethingelse}\PYG{p}{;}
+    \PYG{n}{true} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{p}{...}
+\PYG{k}{end}
+\end{Verbatim}

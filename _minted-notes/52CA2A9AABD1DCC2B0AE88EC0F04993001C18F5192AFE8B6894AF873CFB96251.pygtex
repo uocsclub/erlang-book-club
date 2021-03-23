@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{module}\PYG{p}{(}\PYG{n}{area\PYGZus{}server0}\PYG{p}{).}
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{export}\PYG{p}{([}\PYG{n}{loop}\PYG{o}{/}\PYG{l+m+mi}{0}\PYG{p}{]).}
+
+\PYG{n+nf}{loop}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{k}{receive}
+        \PYG{p}{\PYGZob{}}\PYG{n}{rectangle}\PYG{p}{,} \PYG{n+nv}{Height}\PYG{p}{,} \PYG{n+nv}{Width}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Area of rectangle is }\PYG{l+s+si}{\PYGZti{}p\PYGZti{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{n+nv}{Width} \PYG{o}{*} \PYG{n+nv}{Height}\PYG{p}{]),}
+            \PYG{n}{loop}\PYG{p}{();}
+        \PYG{p}{\PYGZob{}}\PYG{n}{square}\PYG{p}{,} \PYG{n+nv}{Side}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nn}{io}\PYG{p}{:}\PYG{n+nf}{format}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Area of square is }\PYG{l+s+si}{\PYGZti{}p\PYGZti{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{n+nv}{Side} \PYG{o}{*} \PYG{n+nv}{Side}\PYG{p}{]),}
+            \PYG{n}{loop}\PYG{p}{()}
+    \PYG{k}{end}\PYG{p}{.}
+\end{Verbatim}

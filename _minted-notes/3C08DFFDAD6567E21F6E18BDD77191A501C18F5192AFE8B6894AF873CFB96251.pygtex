@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZpc{} PidC is the connected process.}
+
+\PYG{c}{\PYGZpc{} Send data to the port}
+\PYG{n+nv}{Port} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n+nv}{PidC}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{command}\PYG{p}{,} \PYG{n+nv}{Data}\PYG{p}{\PYGZcb{}\PYGZcb{},}
+
+\PYG{c}{\PYGZpc{} Change the connected PID to the port from PidC to Pid1.}
+\PYG{n+nv}{Port} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n+nv}{PidC}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{connect}\PYG{p}{,} \PYG{n+nv}{Pid1}\PYG{p}{\PYGZcb{}\PYGZcb{},}
+
+\PYG{c}{\PYGZpc{} Close the port}
+\PYG{n+nv}{Port} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n+nv}{PidC}\PYG{p}{,} \PYG{n}{close}\PYG{p}{\PYGZcb{}.}
+\end{Verbatim}

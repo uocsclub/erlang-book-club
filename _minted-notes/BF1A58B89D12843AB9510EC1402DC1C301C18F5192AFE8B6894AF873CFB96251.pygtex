@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nv}{Function} \PYG{o}{=} \PYG{k}{fun}
+               \PYG{p}{(}\PYG{n+nv}{Arg}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{somevalue}
+           \PYG{k}{end}\PYG{p}{.}
+\end{Verbatim}

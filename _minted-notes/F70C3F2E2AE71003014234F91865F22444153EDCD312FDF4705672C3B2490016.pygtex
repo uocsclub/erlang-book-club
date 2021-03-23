@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+rooty\PYGZpc{} erl \PYGZhy{}sname samwise
+Erlang/OTP \PYG{l+m}{23} \PYG{o}{[}erts\PYGZhy{}11.1.7\PYG{o}{]} \PYG{o}{[}source\PYG{o}{]} \PYG{o}{[}\PYG{l+m}{64}\PYGZhy{}bit\PYG{o}{]} \PYG{o}{[}smp:4:4\PYG{o}{]} \PYG{o}{[}ds:4:4:10\PYG{o}{]} \PYG{o}{[}async\PYGZhy{}threads:1\PYG{o}{]} \PYG{o}{[}hipe\PYG{o}{]}
+
+Eshell V11.1.7  \PYG{o}{(}abort with \PYGZca{}G\PYG{o}{)}
+\PYG{o}{(}samwise@rooty\PYG{o}{)}\PYG{l+m}{1}\PYGZgt{} kvs:start\PYG{o}{()}.
+\PYG{n+nb}{true}
+\PYG{o}{(}samwise@rooty\PYG{o}{)}\PYG{l+m}{2}\PYGZgt{}
+\end{Verbatim}

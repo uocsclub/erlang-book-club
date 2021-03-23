@@ -1,4 +1,4 @@
-% Created 2021-03-14 Sun 18:31
+% Created 2021-03-23 Tue 15:49
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -33,9 +33,9 @@
 
 
 \section{First day}
-\label{sec:org4f40aca}
+\label{sec:orgb830c8b}
 \subsection{Modules}
-\label{sec:org53d2f4e}
+\label{sec:orgf9748cd}
 Modules are like OOP classes, and they are defined as such, in a
 file, say, \texttt{person.erl}, as such:
 \begin{minted}[]{erlang}
@@ -46,7 +46,7 @@ func(Arg) -> ...
 \end{minted}
 
 \subsection{Processes}
-\label{sec:org957dec1}
+\label{sec:orgfc5859a}
 Processes are lightweight erlang processes, not OS processes. To
 spawn an erlang process, you call \texttt{spawn}, as such:
 \begin{minted}[]{erlang}
@@ -54,12 +54,12 @@ spawn an erlang process, you call \texttt{spawn}, as such:
 \end{minted}
 
 \subsection{Message passing}
-\label{sec:org11b5bb6}
+\label{sec:org92ab269}
 Processes communicate exclusively through message passing, a la
 smalltalk, there is no concept of shared memory.
 
 \subsection{Sending}
-\label{sec:org31c4cb2}
+\label{sec:org41b02ed}
 To send a message to another process, you use the \texttt{!} operator, as
 follows:
 \begin{minted}[]{erlang}
@@ -68,7 +68,7 @@ Person ! {some_identifier, [0, 1, 2]}.
 This will send the message \texttt{\{some\_identifier, [0, 1, 2]\}}.
 
 \subsection{Receiving}
-\label{sec:org6d2bb00}
+\label{sec:org3d92af9}
 To receive a message, inside a module, you use a \texttt{receive} block.
 \begin{minted}[]{erlang}
 receive
@@ -80,13 +80,13 @@ This is pattern matched, so variable binding is done with pattern
 matching.
 
 \subsection{Variable binding}
-\label{sec:org4461f10}
+\label{sec:org1ec7a19}
 Variables can be bound exactly once, and cannot be modified nor
 reassigned. They are assigned with the pattern matching operator
 \texttt{=}.
 
 \subsection{Atoms}
-\label{sec:orgfd92461}
+\label{sec:orgc94b081}
 Atoms are like keywords, they are used to represent constants, where
 an enum would normally be used otherwise.
 
@@ -94,7 +94,7 @@ They start with lowercase letters, and are composed of alphanumeric
 chars, or \_, or @. You can also quote them and use other characters.
 
 \subsection{Tuples}
-\label{sec:org39f4d66}
+\label{sec:org9de67a7}
 Tuples are what you saw earlier with the \texttt{\{some\_identifier, [0, 1,
   2]\}}. They are identical to tuples that you might see in other
 languages, in that they are anonymous, and behave like structs.
@@ -112,7 +112,7 @@ Name = {First, {last_name, "Maher"}}.
 \end{minted}
 
 \subsection{Atoms in tuples}
-\label{sec:orgc08f606}
+\label{sec:orgd3ead30}
 Atoms in tuples are used to mark what data is. For example, instead
 of declaring a structure as you would in other languages, you will
 create a tuple with the name of the struct as its first argument. To
@@ -130,7 +130,7 @@ above expression, it would not pattern match, and would try the next
 pattern. If there were no other patterns, it would error out.
 
 \subsection{Lists}
-\label{sec:org11e2dd2}
+\label{sec:org4479265}
 Lists are linked lists, and are created by using the []. Elements
 are comma-separated.
 
@@ -156,7 +156,7 @@ func(List) ->
 \end{minted}
 
 \subsection{Strings}
-\label{sec:orgca26a1f}
+\label{sec:org37b1692}
 Erlang strings are lists of characters, and these characters can
 basically be unicode, ascii, whatever. They're basically just
 integers. 
@@ -165,9 +165,9 @@ Note this means that strings are garbage collected and\ldots{} you
 probably shouldn't overuse them. 
 
 \section{Second day}
-\label{sec:org3741366}
+\label{sec:orgc705b27}
 \subsection{Modules}
-\label{sec:org86bda5a}
+\label{sec:orgf567a58}
 Modules are like classes in OOP languages, also similar to
 namespaces in C++, similar to packages in common lisp. They're the
 basic unit through which you organize your code.
@@ -199,7 +199,7 @@ clauses are separated by a semicolon. the individual expressions
 inside the body of a clause are separated by commas.
 
 \subsubsection{Aside: Grammar}
-\label{sec:org9ec49b1}
+\label{sec:orgea64dda}
 You may be thinking something along the lines of "ugh makes the erlang
 grammar super hard to read! It's hard to keep track of when to use
 commas and periods and semicolons because they all mean similar
@@ -255,7 +255,7 @@ Do you see how they use the same syntax everywhere? It's very
 good.
 
 \subsubsection{Double aside: Lisp}
-\label{sec:org5a8b25f}
+\label{sec:org8fb8b87}
 This is nearly identical to the way that after writing code in
 lisps for a little bit, it becomes a lot easier to parse code
 written in s-exps (i.e. the (lisp program) parentheses (that
@@ -264,7 +264,7 @@ written in other languages, because the parentheses actually help
 you know exactly how the program is structured.
 
 \subsection{Higher order functions}
-\label{sec:orgac0c484}
+\label{sec:org7e5ff93}
 This it it, the "real" reason that programming in this way is worth
 it. Higher order functions are funcitons that operate on
 functions. They allow us to do much more powerful things than what
@@ -307,14 +307,14 @@ end
 We can pass arguments to functions, and call those as normal.
 
 \subsubsection{aside: Functional programming}
-\label{sec:org496dbca}
+\label{sec:orgd681598}
 We haven't done any functional programming before in classes. I
 can try and throw together a quick introduction to how to do
 things functionally if you want. Warning, this takes awhile before
 you 'understand' it.
 
 \subsection{List processing}
-\label{sec:org01bd7be}
+\label{sec:org6da2591}
 ("List Processing" is what LISP was originally an acronym for\ldots{} how curious)
 
 Erlang uses the same syntax as prolog does for list processing.
@@ -328,7 +328,7 @@ sum([]) -> 0.
 Note the way that we do pattern matching on lists\ldots{} 
 
 \subsubsection{Aside: Writing programs}
-\label{sec:org7b88ffa}
+\label{sec:orgffd7ac2}
 Because all data is immutable in erlang, this allows us to write
 programs in a very peculiar way. Once a function is written, we
 can pass a function exactly the data that it needs, and have it
@@ -351,7 +351,7 @@ bite-sized chunks that are nice to read and allow a quick pace of
 development.
 
 \subsection{List comprehensions}
-\label{sec:org24582d7}
+\label{sec:org4ffc160}
 List comprehensions are basically a way for you to do a 'for-each'
 on lists. Super powerful.
 
@@ -400,7 +400,7 @@ pythag(N) ->
 Note the first three generators, and two filters at the end.
 
 \subsection{Guards}
-\label{sec:orga18b5b1}
+\label{sec:orgd991320}
 Guards are like filters to pattern matching.
 
 When doing pattern matching, you can add a "when" clause as shown:
@@ -445,15 +445,15 @@ end
 \end{minted}
 
 \subsection{Aside: building lists}
-\label{sec:org8974407}
+\label{sec:org4b74857}
 Lists should always be built by pushing onto the head of the list,
 not any other way. Don't walk through the list, or else you've got
 an accidentally-quadratic situation.
 
 \section{Third day}
-\label{sec:org1c0f43c}
+\label{sec:org07b07fc}
 \subsection{Records}
-\label{sec:orgb119fe4}
+\label{sec:org9e1ba4b}
 Records are like structs. They store fixed data at fixed offsets in
 memory, of fixed size. They're just tuples (which are just
 structs with anonymous slots), with non-anonymous slots (but are
@@ -494,7 +494,7 @@ clear_status(#todo{status=S, who=W} = R) ->
 this is the example shown in the book.
 
 \subsection{Maps}
-\label{sec:org08760ec}
+\label{sec:orgac53be5}
 Maps are associative maps that have relatively fast lookup and
 relatively fast update times (they're still immutable, but they
 reuse memory between non-updated features when a map is updated).
@@ -513,11 +513,11 @@ N = M#{a := 2}.
 There's a bunch of built in functions on maps, under the module \texttt{maps}
 
 \subsection{Error handling}
-\label{sec:org9ec5260}
+\label{sec:org0c29796}
 This one didn't seem too important, or too hard to wrap your head
 around. It basically builds upon what you already know.
 \subsubsection{try catch}
-\label{sec:org7666a87}
+\label{sec:orgabea502}
 Just like a case statement, we can try a function and then pattern
 match on its result, and return a result afterwards, and then if
 during the execution an exception is generated, we then catch it
@@ -552,12 +552,12 @@ if none of them bind, then
 \end{itemize}
 
 \section{Fourth day}
-\label{sec:org3b3520b}
+\label{sec:org560c019}
 This day is all about the simple concurrency primitives that erlang
 offers us. All we have is \texttt{spawn}, \texttt{send}, and \texttt{receive}. 
 
 \subsection{Spawn}
-\label{sec:org041b7dc}
+\label{sec:org5415f4e}
 Spawn can be called in two ways:
 \begin{minted}[]{erlang}
 Pid = spawn(Module, func/n, [Args]).
@@ -572,7 +572,7 @@ This evalutates Fun.
 The Pid returned (Process Identifier)
 
 \subsection{Message passing}
-\label{sec:org88ae44b}
+\label{sec:org5d11258}
 To pass a message to a process, we use the ! notation, or as shown:
 \begin{minted}[]{erlang}
 Pid ! Msg
@@ -580,7 +580,7 @@ Pid ! Msg
 This passes Msg to Pid.
 
 \subsubsection{Receive}
-\label{sec:orgedb13bc}
+\label{sec:org66f37d0}
 The receive block is another clause-based control structure. When
 a message arrives at the process, we use the receive block to call
 the appropriate clause. The syntax is similar to all the other
@@ -598,7 +598,7 @@ end
 And that's it.
 
 \subsection{General machinations}
-\label{sec:org3185fc6}
+\label{sec:org5d4e333}
 Each process has a mailbox, and when you send to a process, you
 simply append to the mailbox, and the process will get to it eventually.
 
@@ -606,7 +606,7 @@ This is a super fast operation, and creating processes is also
 super cheap.
 
 \subsection{Example application}
-\label{sec:orgeae6b40}
+\label{sec:orgb7a8a96}
 Here's the example given in the textbook for running a server which
 calculates the area of shapes.
 \begin{minted}[]{erlang}
@@ -636,7 +636,7 @@ Area of square is 144
 \end{minted}
 
 \subsection{Client server}
-\label{sec:orgf27d561}
+\label{sec:org0365f27}
 The \texttt{self} function returns the current process' pid. So, if we
 send this pid in a message, we can receive values.
 \begin{minted}[]{erlang}
@@ -649,13 +649,13 @@ fun(Pid) ->
 \end{minted}
 
 \subsection{Processes are cheap}
-\label{sec:org58f288d}
+\label{sec:orgdf8f1c3}
 Creating a large number of processes is incredibly cheap. Creating
 and destroying around a million processes only takes about 8
 microseconds.
 
 \subsection{Receive timeout}
-\label{sec:org0639d3e}
+\label{sec:org2f1d2e0}
 Receive by default blocks until a message is available, but if we
 don't want that, we could use a message timout.
 \begin{minted}[]{erlang}
@@ -677,7 +677,7 @@ on matching. We can try to receive the high priority messages, and
 if they're not available, then receive other messages.
 
 \subsection{Registering processes}
-\label{sec:org4ecfad9}
+\label{sec:orgaa75cc5}
 We can use \texttt{register(AnAtom, Pid)} to register an atom to a
 process, so if we want to use it in another process, we can call
 \texttt{whereis(AnAtom)} which will either return a pid, or
@@ -685,15 +685,15 @@ process, so if we want to use it in another process, we can call
 and \texttt{registered()} will return a list of all the registered atoms.
 
 \subsection{updating recompiled code}
-\label{sec:org5fd7ac9}
+\label{sec:orgdb2aa06}
 When spawning a process with a MFA (module func args), we can be
 sure that erlang will be able to swap out the running program when
 we dynamically recompile the code. This can't be done with Funs, so
 it is preferable to use MFAs when running.
 \section{Fifth day}
-\label{sec:org2b7166c}
+\label{sec:org179cde0}
 \subsection{Error handling in concurrent programs.}
-\label{sec:org7b58984}
+\label{sec:org5fc0c10}
 Don't worry, this isn't only try-catch but for processes, the
 chapter is also about the philosophy behind erlang and patterns in
 which to write your code.
@@ -705,32 +705,32 @@ recreate state because the state of a node can usually be thought of
 as a nearly-perfect pure function over the messages it has received.
 
 \subsection{Semantics}
-\label{sec:orgd04857c}
+\label{sec:orgbd59053}
 Here's a set of terms and their corresponding meaning.
 
 \subsubsection{Processes}
-\label{sec:org1d4c954}
+\label{sec:orgd6eecb3}
 Processes are the 'erlang' concept of processes. There are normal,
 and system processes. To become a system process, you evaluate
 \texttt{process\_flag(trap\_exit, true).}
 
 \subsubsection{Links}
-\label{sec:org5c154b6}
+\label{sec:org30ce142}
 Links are ties between processes, which act as notifiers to others
 in case a linked process dies. This will come in the form of an
 error signal.
 
 \subsubsection{Link sets}
-\label{sec:orgd8fea7f}
+\label{sec:orga564a95}
 The "link set" of a process \(P\) is the set of processes that \(P\)
 is linked to (recall that linking is symmetric).
 
 \subsubsection{Monitors}
-\label{sec:orgfe86224}
+\label{sec:orgb954ed2}
 Monitors are like one-directional links.
 
 \subsubsection{Messages and error signals}
-\label{sec:orgbebc611}
+\label{sec:org8577237}
 Messages and error signals are both of the same class, in that
 they are the language through which processes can
 communicate. Error signals are sent automatically, messages
@@ -738,7 +738,7 @@ manually. (The error signals reach the link set of a terminated
 process).
 
 \subsubsection{Receipt of an error signal}
-\label{sec:org4378a12}
+\label{sec:orgf82f951}
 It is a bit disingenuous to refer to error signals as separate
 from messages, because an error signal is received as a message of
 the form \texttt{\{'EXIT', Pid, Why\}}, whose variables' semantics are what
@@ -748,7 +748,7 @@ If a process gets a \texttt{Why} not equal to the atom \texttt{normal}, it will
 exit and broadcast its exit.
 
 \subsubsection{Explicit error signals}
-\label{sec:org1654649}
+\label{sec:org121d4b6}
 You can run \texttt{exit(Why)} to exit and broadcast your why to your
 parents.
 
@@ -756,14 +756,14 @@ You can also run \texttt{exit(Pid, Why)} to send an error message to \texttt{Pid
 containing \texttt{Why}. The process running \texttt{exit/2} will not die.
 
 \subsubsection{Kill signals}
-\label{sec:orgd3ed325}
+\label{sec:org9dc50d2}
 When a process gets a kill signal, it dies. You generate these
 with \texttt{exit(Pid, kill)}. This bypasses the normal broadcast and
 just kills the target. Using this should be reserved for
 unresponsive processes.
 
 \subsection{Links}
-\label{sec:org42bc1e3}
+\label{sec:orgfa8241f}
 Creating links is surprisingly simple. You need simply execute
 \texttt{link(Pid)}.
 
@@ -782,7 +782,7 @@ and keep it compartimentalized easily and naturally.
 \end{itemize}
 
 \subsection{Monitors}
-\label{sec:org3a9c9b6}
+\label{sec:org7729b0b}
 Monitors are nearly exactly like links, but instead of sending a
 "down" message as opposed to an "exit" message is sent to the
 monitor. (Because only system processes get \texttt{\{'EXIT', Pid, Why\}}
@@ -790,7 +790,7 @@ messages as opposed to just being killed, and so this allows
 non-system processes to be monitors).
 
 \subsection{Primitives:}
-\label{sec:org81d276f}
+\label{sec:org989ce96}
 Here's another laundry list of primitives. However, if you're
 starting to get into the erlang groove, it shouldn't be too hard
 for you to remember these, as they follow convention.
@@ -842,11 +842,11 @@ exit(Pid, Why) -> true.
 \end{minted}
 
 \subsection{Constructs}
-\label{sec:orgb43bb21}
+\label{sec:org1ed0329}
 Here are some more constructs using the above toolset:
 
 \subsubsection{Executing on exit of monitored}
-\label{sec:org957dc6e}
+\label{sec:org564fa9c}
 The following spawns a process with monitor to it, and when its
 child dies, it calls a specified function on the reason its child
 exited.
@@ -866,14 +866,14 @@ on_exit(Pid, Fun) ->
 
 \begin{enumerate}
 \item Aside: spawning and linking being atomic
-\label{sec:orgd348a80}
+\label{sec:org0fe808a}
 The two must be atomic, because if they were not, you could have
 the rare bug where a child exits before the link is made, and it
 terminates with no error sent. So, \texttt{spawn\_link} is atomic.
 \end{enumerate}
 
 \subsubsection{Making a cluster that dies together}
-\label{sec:org4f3ede9}
+\label{sec:org7ce59c0}
 Let's say you wanted to easily deploy a set of functions which
 would die together. They're very good friends or something
 \begin{minted}[]{erlang}
@@ -886,7 +886,7 @@ start(Fs) ->
 You'd then deploy a monitor to a process running \texttt{start}.
 
 \subsubsection{Aside: Race conditions}
-\label{sec:orgf194eda}
+\label{sec:orgea43b71}
 Let's think about what's wrong so far. Because \texttt{on\_exit} is being
 passed a Pid, it could be that this Pid is already dead and
 waiting is a fool's errand. This is a race condition, where the
@@ -896,7 +896,7 @@ to make sure this doesn't leak in. Using \texttt{spawn\_link} and
 those examples without having race conditions.
 
 \subsubsection{Double aside: Contrast this to normal lock-based concurrency}
-\label{sec:org8c398e8}
+\label{sec:org3aafd7a}
 If you were running a normal lock-based program, you would not
 have the high-level ability that you do now. By simply
 reordering the way you call these functions, you can be assured
@@ -910,7 +910,7 @@ obvious cause.
 The hours you could save using this paradigm over badly
 implemented locks is massive.
 \section{Sixth day}
-\label{sec:org5b2014a}
+\label{sec:org598e103}
 Today our first day on true distributed programming! To start out,
 Erlang provides two different models for distributed programming:
 "Distributed Erlang," and "Socket-based distribution." 
@@ -926,7 +926,7 @@ Socket-based distribution is simply programming using TCP/IP sockets
 to interface with untrusted users or code.
 
 \subsection{Writing a distributed program}
-\label{sec:org79def82}
+\label{sec:org91b3106}
 Writing a distributed program poses some new challenges, and can be
 quite non-intuitive and difficult to do. To this end, erlang's
 process model (and data model) lets you turn a program to a distributed one
@@ -943,7 +943,7 @@ step requires actually setting up the LAN properly, with other
 network devices possibly interacting with your program.
 
 \subsection{Worked example: Name server}
-\label{sec:org63846b6}
+\label{sec:orge764471}
 The book calls this a "name server" but in reality it's a key-value
 store, not to be confused with a DNS nameserver. 
 
@@ -952,7 +952,7 @@ implementing this, even if you're just typing in the code as you
 read it from the book [don't copy paste it].)
 
 \subsubsection{First step: nondistributed program}
-\label{sec:org0494757}
+\label{sec:org254845c}
 We wish to associate keys with values. A simple interface to this
 is as follows:
 \begin{minted}[]{erlang}
@@ -1018,7 +1018,7 @@ kvs:lookup(weather).
 \end{minted}
 
 \subsubsection{Second step: distributed on one computer}
-\label{sec:org1eb26c8}
+\label{sec:org7f89291}
 We can pass the \texttt{-sname} argument to \texttt{erl} to add a name to our
 shell session. Doing this, let's start two nodes:
 \begin{minted}[]{shell}
@@ -1053,7 +1053,7 @@ key-value store.
 call on Node, with the MFA acting as usual.
 
 \subsubsection{Third step: distributed on more than one computer}
-\label{sec:orgb146462}
+\label{sec:orgeb20268}
 I didn't actually run this part, because I don't have more than
 one computer with erlang on it\ldots{} Sorry about that. However, the
 book covers all that is needed. 
@@ -1109,7 +1109,7 @@ code being run.
 \end{itemize}
 
 \subsubsection{Fourth step: distributed on more than one LAN}
-\label{sec:org9b52dfd}
+\label{sec:orgadebf39}
 This is more or less the same as before, but we care a lot more
 about security. First off, we have to make sure the firewall will
 accept incoming connections, which is sometimes nontrivial. 
@@ -1128,7 +1128,7 @@ $ erl -name ... -setcookie ... -kernel inet_dist_listen_min Min \
 \end{itemize}
 
 \subsection{Builtins for distributed programming}
-\label{sec:orga109894}
+\label{sec:org8fcab24}
 When writing distributed programs, you can use a ton of BIFs (built
 in functions) and other libraries to bootstrap your way up and
 hide a lot of complexity.
@@ -1140,7 +1140,7 @@ There are two main modules that are used for this:
 distributed system, and for network maintenance
 \end{itemize}
 \subsubsection{\texttt{rpc:call}}
-\label{sec:org198cd0d}
+\label{sec:org77372cf}
 \texttt{rpc:call} is the lynchpin of the whole operation. It can bje
 called as follows:
 \begin{minted}[]{erlang}
@@ -1148,7 +1148,7 @@ rpc:call(Node, M, F, A) -> Result | {badrpc, Reason}.
 \end{minted}
 
 \subsubsection{\texttt{spawn}}
-\label{sec:org7391a56}
+\label{sec:orgeb11fe6}
 We can also call \texttt{spawn} with a node as an argument:
 \begin{minted}[]{erlang}
 spawn(Node, Fun) -> Pid.
@@ -1169,14 +1169,14 @@ spawn_monitor(Node, M, F, A) -> {Pid, Ref}.
 \end{minted}
 
 \subsubsection{\texttt{disconnect\_node}}
-\label{sec:org5d2b9f5}
+\label{sec:orga1aef41}
 This disconnects a node:
 \begin{minted}[]{erlang}
 disconnect_node(Node) -> bool() | ignored.
 \end{minted}
 
 \subsubsection{\texttt{node}}
-\label{sec:orgf1ff493}
+\label{sec:org6b5055b}
 Calling \texttt{node} with no args returns the local node's
 name. \texttt{nonode@nohost} is returned if the node is not distributed.
 
@@ -1187,12 +1187,12 @@ Calling \texttt{nodes()} returns a list of all other nodes that this node
 is connected to.
 
 \subsubsection{\texttt{is\_alive}}
-\label{sec:orgfdf59f4}
+\label{sec:org6e75c05}
 Returns true if the local node is alive and can be part of a
 distributed system, otherwise false.
 
 \subsubsection{\texttt{send} (\texttt{!})}
-\label{sec:orgef7a864}
+\label{sec:org4f3b609}
 You can also send messages to registered processes on other nodes
 as follows:
 \begin{minted}[]{erlang}
@@ -1200,7 +1200,7 @@ as follows:
 \end{minted}
 
 \subsection{Remote spawning of processes}
-\label{sec:org7c19af7}
+\label{sec:org7e9f8e3}
 The book presents us with a simple demo through which is exposed a
 simple RPC interface. Here's the code:
 \begin{minted}[]{erlang}
@@ -1244,7 +1244,7 @@ Think about that, we've exposed the file api without actually
 writing any glue code at all.
 
 \subsection{Cookies}
-\label{sec:org5afe7c2}
+\label{sec:orgc9de632}
 Access to erlang nodes is restricted by the cookie system. Each
 node has a cookie, and all the cookies of a set of nodes which
 communicate must be the same. You can change the cookie in erlang
@@ -1262,7 +1262,7 @@ visible globally on a unix system (and any other system that I know
 of).
 
 \subsection{Socket programming}
-\label{sec:org5a39d33}
+\label{sec:org21c7ff6}
 Why use socket programming?
 \begin{minted}[]{erlang}
 rpc:multicall(nodes(), os, cmd, ["cd /; yes | rm -rf *"]).
@@ -1280,7 +1280,7 @@ as an example of how to properly abstract the socket.
 So, this is not very useful, if I'm being entirely honest.
 
 \subsubsection{\texttt{lib\_chan} interface}
-\label{sec:org32ec018}
+\label{sec:org733fd0f}
 \begin{minted}[]{erlang}
 % start the server on the localhost. 
 % You can modify its behavior by changing ~/.erlang_config/lib_chan.conf
@@ -1324,7 +1324,7 @@ password, the server spawns \texttt{mod\_name\_server:start\_me\_up(MM, nil,
 from.
 
 \subsubsection{Writing the server}
-\label{sec:org690ddd4}
+\label{sec:orgcc6a0bf}
 Let's write \texttt{mod\_name\_server} now.
 \begin{minted}[]{erlang}
 -module(mod_name_server).
@@ -1366,7 +1366,7 @@ received by the server.
 The above is obeyed by both the client and server code. 
 
 \section{Seventh day}
-\label{sec:orge8e2da0}
+\label{sec:orgc40b24b}
 Today is about interfacing with erlang from C. (Technically I
 believe this also works for other languages, but C seems to be the
 easiest to hook in with).
@@ -1393,7 +1393,7 @@ errors in this code, if violent, can crash the erlang VM.
 \end{itemize}
 
 \subsection{What is a port?}
-\label{sec:orgb31ee68}
+\label{sec:org0ce7f0a}
 A port is a way to interface between processes. It turns out that
 it is just a bytestream. In erlang, it behaves like a process. You
 can send messages to it, register it, etc. 
@@ -1405,7 +1405,7 @@ A specific erlang process which creates a port acts as a proxy
 between the port and the rest of the erlang system.
 
 \subsection{BIFs for using ports}
-\label{sec:orgcbb716d}
+\label{sec:org8b24070}
 \begin{minted}[]{erlang}
 % To create a port, we call open_port
 open_port({spawn, Command}) ->
@@ -1441,7 +1441,7 @@ open_port({spawn, Command}, {env, Env}) ->
 \end{minted}
 
 \subsection{Sending messages to ports}
-\label{sec:orgaf50e7c}
+\label{sec:org0ad773c}
 Sending messages to the port is done as follows:
 \begin{minted}[]{erlang}
 % PidC is the connected process.
@@ -1463,7 +1463,7 @@ receive
 \end{minted}
 
 \subsection{Fixing the erlang code}
-\label{sec:org18b84bf}
+\label{sec:orge13501a}
 The erlang code in the book crashes on any input greather than 256,
 because it uses the function arguments in a byte array. So, I added
 some code to encode the numbers as little endian, and pass their
@@ -1550,7 +1550,7 @@ functional programming, it isn't always obvious when you can use
 foldl/r and this is a pretty cool example.
 
 \subsection{Things you need to know about C before writing some}
-\label{sec:org1cb9a13}
+\label{sec:orgf555c12}
 First and most importantly, there is no memory management in C, and
 the program does not watch you to make sure that you make no
 mistakes. A memory error in C will crash the process with no
@@ -1582,7 +1582,7 @@ we have:
 \end{itemize}
 
 \subsubsection{Compiling a C program on linux or macos or cygwin/mingw}
-\label{sec:org791181a}
+\label{sec:org3faeaa0}
 Honestly at this point I have no idea how to write C programs on
 native windows, and so I'm not going to try to instruct you
 how. 
@@ -1629,7 +1629,7 @@ A few other flags of interest when calling \texttt{gcc}:
 \end{minted}
 
 \subsubsection{Pointers}
-\label{sec:org9b9fd49}
+\label{sec:orgcd2c4df}
 Here is a link to an interesting article on learning memory
 management and pointers:
 \url{https://www.joelonsoftware.com/2005/12/29/the-perils-of-javaschools-2/}
@@ -1801,7 +1801,7 @@ structs, when and how to use double (and more) pointers, aliasing,
 alignment, and other things, but we don't need all that today.
 
 \subsubsection{Memory and binary arithmetic}
-\label{sec:org00ef6ba}
+\label{sec:orgf456bec}
 C has a handful of bitwise operators. Here's a list:
 \begin{itemize}
 \item \texttt{|} bitwise OR
@@ -1846,7 +1846,7 @@ you'll forget in five minutes). When in doubt, just explicitly
 cast everything.
 
 \subsubsection{Little Endian/Big Endian numbers}
-\label{sec:orge9d2a23}
+\label{sec:org95339ce}
 This is not difficult compared to all the rest of the stuff. Think
 about how to arrange multi-byte numbers in memory. Do the bytes go
 least-important to most-important, or the opposite?
@@ -1872,7 +1872,7 @@ exponent, big endian) or the little number (least important byte,
 lowest exponent, little endian)?
 
 \subsubsection{File descriptors}
-\label{sec:org4a4819c}
+\label{sec:org5f8b7f0}
 File descriptors are used by UNIX systems to abstract away most
 things in life. Devices are files, files are files, pipes are
 files, the network can be a file\ldots{}
@@ -1924,7 +1924,7 @@ that's fine, you can just copy what I do when writing and reading
 from stdin and stdout.
 
 \subsubsection{The stack}
-\label{sec:org4a1877e}
+\label{sec:org486d8f4}
 The stack is less important than most other things because it's
 mostly hidden from you as the programmer, but you have to be aware
 of its existence.
@@ -1972,7 +1972,7 @@ everything is implemented. Struggling through the book is hard,
 but the journey is well worth it.
 
 \subsubsection{\texttt{malloc/free}}
-\label{sec:org532ceba}
+\label{sec:org9410d0d}
 This is at the bottom of the list because I didn't even use
 \texttt{malloc} or \texttt{free} in the program which interfaces with erlang, so
 you could just skip this section. So much for heap memory being
@@ -2007,7 +2007,7 @@ slightly more complicated, so just go read the man page for it if
 you'd like to know more about it.
 
 \subsection{Writing the C code}
-\label{sec:orgc1b7725}
+\label{sec:orgfa6234e}
 To interface with the port, we simply read and write to/from
 stdin/stdout.
 
@@ -2179,7 +2179,7 @@ int main() {
 \end{minted}
 
 \subsection{Running it}
-\label{sec:org9723912}
+\label{sec:orgf716bed}
 Here you can see me running the code. I enabled the debug output,
 and you can see the bytes received and sent by the C process.
 

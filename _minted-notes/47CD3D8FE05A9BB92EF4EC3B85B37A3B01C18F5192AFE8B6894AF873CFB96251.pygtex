@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{case} \PYG{n+nv}{Variable} \PYG{k}{of}
+    \PYG{n+nv}{Opt1} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{something}\PYG{p}{;}
+    \PYG{n+nv}{Opt2} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{something}\PYG{p}{;}
+    \PYG{n+nv}{Opt3} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{something}
+\PYG{k}{end}
+
+\PYG{k}{if} \PYG{n+nv}{Test}
+   \PYG{n+nv}{Opt1} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{thing}\PYG{p}{;}
+   \PYG{n}{true} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+        \PYG{n}{otherthing}
+\PYG{k}{end}
+
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n}{one}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{l+m+mi}{1}\PYG{p}{;}
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n}{two}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{l+m+mi}{2}\PYG{p}{;}
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n}{three}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{l+m+mi}{3}\PYG{p}{;}
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n}{four}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{l+m+mi}{4}\PYG{p}{;}
+\PYG{n+nf}{func}\PYG{p}{(}\PYG{n}{five}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{l+m+mi}{5}\PYG{p}{.}
+\end{Verbatim}

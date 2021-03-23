@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{max}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{,} \PYG{n+nv}{Y}\PYG{p}{)} \PYG{k}{when} \PYG{n+nv}{X} \PYG{o}{\PYGZgt{}} \PYG{n+nv}{Y} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nv}{X}\PYG{p}{;}
+\PYG{n+nf}{max}\PYG{p}{(}\PYG{n+nv}{X}\PYG{p}{,} \PYG{n+nv}{Y}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nv}{Y}\PYG{p}{.}
+\end{Verbatim}

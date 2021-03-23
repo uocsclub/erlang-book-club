@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZob{}\PYGZob{}}\PYG{n}{first\PYGZus{}name}\PYG{p}{,} \PYG{n+nv}{FName}\PYG{p}{\PYGZcb{},} \PYG{p}{\PYGZob{}}\PYG{n}{last\PYGZus{}name}\PYG{p}{,} \PYG{n+nv}{LName}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{=} \PYG{n+nv}{Name}\PYG{p}{.} \PYG{c}{\PYGZpc{} FName = \PYGZdq{}Sean\PYGZdq{}}
+\PYG{p}{\PYGZob{}}\PYG{n+nv}{FName}\PYG{p}{,}               \PYG{p}{\PYGZob{}}\PYG{n}{last\PYGZus{}name}\PYG{p}{,} \PYG{n+nv}{LName}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{=} \PYG{n+nv}{Name}\PYG{p}{.} \PYG{c}{\PYGZpc{} Fname = \PYGZob{}first\PYGZus{}name, \PYGZdq{}Sean\PYGZdq{}\PYGZcb{}}
+\end{Verbatim}

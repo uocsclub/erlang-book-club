@@ -1,0 +1,28 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{module}\PYG{p}{(}\PYG{n}{kvs}\PYG{p}{).}
+\PYG{p}{\PYGZhy{}}\PYG{n+ni}{export}\PYG{p}{([}\PYG{n}{start}\PYG{o}{/}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{store}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{lookup}\PYG{o}{/}\PYG{l+m+mi}{1}\PYG{p}{]).}
+
+\PYG{n+nf}{rpc}\PYG{p}{(}\PYG{n+nv}{Query}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{n}{kvs\PYGZus{}server} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{self}\PYG{p}{(),} \PYG{n+nv}{Query}\PYG{p}{\PYGZcb{},}
+    \PYG{k}{receive}
+        \PYG{p}{\PYGZob{}}\PYG{n}{kvs\PYGZus{}server}\PYG{p}{,} \PYG{n+nv}{Reply}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nv}{Reply}
+    \PYG{k}{end}\PYG{p}{.}
+
+\PYG{n+nf}{store}\PYG{p}{(}\PYG{n+nv}{Key}\PYG{p}{,} \PYG{n+nv}{Value}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{rpc}\PYG{p}{(\PYGZob{}}\PYG{n}{store}\PYG{p}{,} \PYG{n+nv}{Key}\PYG{p}{,} \PYG{n+nv}{Value}\PYG{p}{\PYGZcb{}).}
+
+\PYG{n+nf}{lookup}\PYG{p}{(}\PYG{n+nv}{Key}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{rpc}\PYG{p}{(\PYGZob{}}\PYG{n}{lookup}\PYG{p}{,} \PYG{n+nv}{Key}\PYG{p}{\PYGZcb{}).}
+
+\PYG{n+nf}{loop}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{k}{receive}
+        \PYG{p}{\PYGZob{}}\PYG{n+nv}{From}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{store}\PYG{p}{,} \PYG{n+nv}{Key}\PYG{p}{,} \PYG{n+nv}{Value}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nb}{put}\PYG{p}{(}\PYG{n+nv}{Key}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{ok}\PYG{p}{,} \PYG{n+nv}{Value}\PYG{p}{\PYGZcb{}),}
+            \PYG{n+nv}{From} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{kvs\PYGZus{}server}\PYG{p}{,} \PYG{n}{true}\PYG{p}{\PYGZcb{},}
+            \PYG{n}{loop}\PYG{p}{();}
+        \PYG{p}{\PYGZob{}}\PYG{n+nv}{From}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{lookup}\PYG{p}{,} \PYG{n+nv}{Key}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+            \PYG{n+nv}{From} \PYG{o}{!} \PYG{p}{\PYGZob{}}\PYG{n}{kvs\PYGZus{}server}\PYG{p}{,} \PYG{n+nb}{get}\PYG{p}{(}\PYG{n+nv}{Key}\PYG{p}{)\PYGZcb{},}
+            \PYG{n}{loop}\PYG{p}{()}
+    \PYG{k}{end}\PYG{p}{.}
+
+\PYG{n+nf}{start}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nb}{register}\PYG{p}{(}\PYG{n}{kvs\PYGZus{}server}\PYG{p}{,} \PYG{n+nb}{spawn}\PYG{p}{(}\PYG{k}{fun}\PYG{p}{()} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{loop}\PYG{p}{()} \PYG{k}{end}\PYG{p}{)).}
+\end{Verbatim}

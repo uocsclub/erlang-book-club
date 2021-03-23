@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGZhy{}Wall \PYGZhy{}Wextra \PYG{c+c1}{\PYGZsh{} Show all warnings (you should probably use this, and}
+              \PYG{c+c1}{\PYGZsh{} always remove all warnings from your code)}
+\PYGZhy{}g \PYG{c+c1}{\PYGZsh{} add debugging symbols. This lets you do stuff like add}
+   \PYG{c+c1}{\PYGZsh{} breakpoints on lines of code, inspect the values of variables,}
+   \PYG{c+c1}{\PYGZsh{} etc. from a debugger}
+\PYGZhy{}Ox \PYG{c+c1}{\PYGZsh{} optimization level x (0\PYGZhy{}3)}
+\end{Verbatim}

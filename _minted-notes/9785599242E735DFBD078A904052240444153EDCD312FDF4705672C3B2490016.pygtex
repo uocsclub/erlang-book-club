@@ -1,0 +1,35 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{l+m}{46}\PYGZgt{} interface:start\PYG{o}{()}.
+interface:start\PYG{o}{()}.
+\PYG{n+nb}{true}
+\PYG{l+m}{47}\PYGZgt{} starting external program
+interface:sum\PYG{o}{(}\PYG{l+m}{11002}, \PYG{l+m}{1234}\PYG{o}{)}.
+interface:sum\PYG{o}{(}\PYG{l+m}{11002}, \PYG{l+m}{1234}\PYG{o}{)}.
+Hexdump of bytes received by C program, minus header:
+\PYG{l+m}{01} \PYG{l+m}{02} fa 2a \PYG{l+m}{02} d2 \PYG{l+m}{04}
+C program sending the following bytes to erlang \PYG{o}{(}with header\PYG{o}{)}:
+\PYG{l+m}{00} \PYG{l+m}{03} \PYG{l+m}{02} cc 2f
+\PYG{l+m}{12236}
+\PYG{l+m}{48}\PYGZgt{} interface:sum\PYG{o}{(}\PYG{l+m}{1234}, \PYG{l+m}{1}\PYG{o}{)}.
+interface:sum\PYG{o}{(}\PYG{l+m}{1234}, \PYG{l+m}{1}\PYG{o}{)}.
+Hexdump of bytes received by C program, minus header:
+\PYG{l+m}{01} \PYG{l+m}{02} d2 \PYG{l+m}{04} \PYG{l+m}{01} \PYG{l+m}{01}
+C program sending the following bytes to erlang \PYG{o}{(}with header\PYG{o}{)}:
+\PYG{l+m}{00} \PYG{l+m}{03} \PYG{l+m}{02} d3 \PYG{l+m}{04}
+\PYG{l+m}{1235}
+\PYG{l+m}{49}\PYGZgt{} interface:twice\PYG{o}{(}\PYG{l+m}{1234}\PYG{o}{)}.
+interface:twice\PYG{o}{(}\PYG{l+m}{1234}\PYG{o}{)}.
+Hexdump of bytes received by C program, minus header:
+\PYG{l+m}{02} \PYG{l+m}{02} d2 \PYG{l+m}{04}
+C program sending the following bytes to erlang \PYG{o}{(}with header\PYG{o}{)}:
+\PYG{l+m}{00} \PYG{l+m}{03} \PYG{l+m}{02} a4 \PYG{l+m}{09}
+\PYG{l+m}{2468}
+\PYG{l+m}{50}\PYGZgt{} interface:twice\PYG{o}{(}\PYG{l+m}{123589724}\PYG{o}{)}.
+interface:twice\PYG{o}{(}\PYG{l+m}{123589724}\PYG{o}{)}.
+Hexdump of bytes received by C program, minus header:
+\PYG{l+m}{02} \PYG{l+m}{04} 5c d4 5d \PYG{l+m}{07}
+C program sending the following bytes to erlang \PYG{o}{(}with header\PYG{o}{)}:
+\PYG{l+m}{00} \PYG{l+m}{05} \PYG{l+m}{04} b8 a8 bb 0e
+\PYG{l+m}{247179448}
+\PYG{l+m}{51}\PYGZgt{}
+\end{Verbatim}

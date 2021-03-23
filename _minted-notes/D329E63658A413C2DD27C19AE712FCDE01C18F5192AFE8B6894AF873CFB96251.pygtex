@@ -1,0 +1,33 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZpc{} To create a port, we call open\PYGZus{}port}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n+nb}{spawn}\PYG{p}{,} \PYG{n+nv}{Command}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} Start Command as an external program. Starts outside of erlang}
+    \PYG{c}{\PYGZpc{} unless there\PYGZsq{}s a linked\PYGZhy{}in command with this name}
+    \PYG{p}{;}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n}{fd}\PYG{p}{,} \PYG{n+nv}{In}\PYG{p}{,} \PYG{n+nv}{Out}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} lets you use any open file descriptors that erlang can see. In}
+    \PYG{c}{\PYGZpc{} is for stdin, Out is for stdout.}
+    \PYG{p}{;}
+\PYG{c}{\PYGZpc{}\PYGZpc{} there is also a second optional argument.}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(}\PYG{n+nv}{PortType}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{packet}\PYG{p}{,} \PYG{n+nv}{N}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} This specifies that packets will have an N byte header}
+    \PYG{p}{;}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(}\PYG{n+nv}{PortType}\PYG{p}{,} \PYG{n}{stream}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} this makes packets be sent without header}
+    \PYG{p}{;}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(}\PYG{n+nv}{PortType}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{n}{line}\PYG{p}{,} \PYG{n+nv}{Max}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} deliver messages \PYGZsq{}one per line\PYGZsq{}, and if the line is more than}
+    \PYG{c}{\PYGZpc{} Max bytes then it is split}
+    \PYG{p}{;}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n+nb}{spawn}\PYG{p}{,} \PYG{n+nv}{Command}\PYG{p}{\PYGZcb{},} \PYG{p}{\PYGZob{}}\PYG{n}{cd}\PYG{p}{,} \PYG{n+nv}{Dir}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} this starts the command from Dir. Only valid with \PYGZsq{}spawn\PYGZsq{}, you}
+    \PYG{c}{\PYGZpc{} can\PYGZsq{}t use this option with fd.}
+    \PYG{p}{;}
+\PYG{n+nb}{open\PYGZus{}port}\PYG{p}{(\PYGZob{}}\PYG{n+nb}{spawn}\PYG{p}{,} \PYG{n+nv}{Command}\PYG{p}{\PYGZcb{},} \PYG{p}{\PYGZob{}}\PYG{n}{env}\PYG{p}{,} \PYG{n+nv}{Env}\PYG{p}{\PYGZcb{})} \PYG{o}{\PYGZhy{}\PYGZgt{}}
+    \PYG{c}{\PYGZpc{} this starts the command with specific environment variables}
+    \PYG{c}{\PYGZpc{} accessible. Env is a list of env vars of the form [\PYGZob{}VarName,}
+    \PYG{c}{\PYGZpc{} Val\PYGZcb{}] with the two being strings.}
+    \PYG{p}{.}
+\PYG{c}{\PYGZpc{} The above isn\PYGZsq{}t all the options, but it\PYGZsq{}s most of them. You can find}
+\PYG{c}{\PYGZpc{} the rest in the manual for erlang.}
+\end{Verbatim}

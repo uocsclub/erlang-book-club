@@ -1,0 +1,13 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}\PYG{c+c1}{ // for the declaration of size\PYGZus{}t}
+
+\PYG{k+kt}{void} \PYG{o}{*}\PYG{n+nf}{memset}\PYG{p}{(}\PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{ptr}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{c}\PYG{p}{,} \PYG{k+kt}{size\PYGZus{}t} \PYG{n}{n}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{p} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{char} \PYG{o}{*}\PYG{p}{)}\PYG{n}{ptr}\PYG{p}{;}
+
+        \PYG{k}{for} \PYG{p}{(}\PYG{k+kt}{size\PYGZus{}t} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{n}\PYG{p}{;} \PYG{o}{++}\PYG{n}{i}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+                \PYG{o}{*}\PYG{p}{(}\PYG{n}{p} \PYG{o}{+} \PYG{n}{i}\PYG{p}{)} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{unsigned} \PYG{k+kt}{char}\PYG{p}{)}\PYG{n}{c}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k}{return} \PYG{n}{ptr}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
