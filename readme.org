@@ -4,7 +4,7 @@
   all the notes that I've written about what we've read. 
 
   We're currently reading "Programming Erlang: Software for a
-  Concurrent World." by Joe Armstrong. You could even read [[./erlang-resume.pdf][the notes]]
+  Concurrent World." by Joe Armstrong. You could even read [[./notes.pdf][the notes]]
   as a standalone reference on large parts of erlang.
 
   Come hang out for book club on the [[https://discord.gg/WAGf8cQ37Y][discord server]] on Friday nights
