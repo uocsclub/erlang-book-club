@@ -2027,7 +2027,7 @@
   more consise code for interacting with bytestreams. (Plus, I can
   imagine how this might be compiled and ran, so I haven't ran any
   benchmarks, but I think it might be quite fast).
-
+  
 ** Modules you gotta know
    - ~file~ is the module that contains the normal file i/o. Opening,
      closing, reading, writing, ls, etc.
@@ -2107,22 +2107,16 @@
                              owner => <0.81.0>,r_ahead_size => 0,
                              r_buffer => #Ref<0.3399782956.215089154.90797>}}}
       20> file:pread(F, 10, 10).
-      file:pread(F, 10, 10).
       {ok,<<", i, have}">>}
       21> file:pread(F, 20, 10).
-      file:pread(F, 20, 10).
       {ok,<<".\n{some, {">>}
       22> file:pread(F, 10, 20).
-      file:pread(F, 10, 20).
       {ok,<<", i, have}.\n{some, {">>}
       23> file:pread(F, 15, 50).
-      file:pread(F, 15, 50).
       {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, ">>}
       24> file:pread(F, 15, 100).
-      file:pread(F, 15, 100).
       {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}.">>}
       25> file:pread(F, 15, 200).
-      file:pread(F, 15, 200).
       {ok,<<"have}.\n{some, {tuples, in}, {this, file, {and_}}, id, like, to, read, [them]}.">>}
       2
     #+end_src
@@ -2137,7 +2131,6 @@
     This is how I do the file i/o in the bencode parser that I wrote
     earlier which you can find in [[./code/torrent/benc.erl]].
 
-   
 ** Writing files
    The most commonly used bif to create formatted output is
    ~io:format~. ~io:format~ is the 'common' printf just like in other
@@ -2175,7 +2168,7 @@
    These are copy pasted from the book. Pls don't sue me.
    
 ** ~file:write_file~
-   ~file:write_file(File, IO)~ deserves its own section, because it is
+   ~file:write_file(FileName, IO)~ deserves its own section, because it is
    fast, atomic, and easy. ~File~ is a file, and ~IO~ is an I/O list,
    which is a list of binaries, integers from 0 to 255 (bytes), or
    other I/O lists (this includes strings). When you pass a deeply
@@ -2206,7 +2199,167 @@
     ~file:copy(Source, Dest)~ copies Source to Dest and
     ~file:delete(Dest)~ deletes Dest.
     
-    
 ** Let's clone ~find~ as an exercise.
-    
+* Ninth day
+  We've reached the point where the wonderful and beautiful society of
+  pure erlang we've built for ourselves becomes infected by the world
+  of web programming.
+  
+  TCP sockets are a bytestream api that you can use to communicate
+  between any two servers on the open internet with a semi-reliable
+  connection. [[https://www.khanacademy.org/computing/computers-and-internet/xcae6f4a7ff015e7d:the-internet/xcae6f4a7ff015e7d:transporting-packets/a/transmission-control-protocol--tcp][You should read about them]].
+
+  What's more, we're also learning about UDP sockets, and their
+  implications as well. TCP sockets are slower than UDP because they
+  guarantee non-loss and eventual total (up to network failure)
+  ordering of messages in a connection. However, UDP has limited
+  application, because most protocols simply require ordering of
+  messages.
+  
+  A ton of protocols, use TCP under the hood as their mediator above
+  the hardware. This includes anything that has to deliver nontrivial
+  amounts of data or have some kind of a swarm-like 'network', or
+  something that has to deliver more than miniscule amounts of data,
+  (things that are not DNS, NTP, ICMP, etc).
+
+  To use these two tools in erlang, we use the two libraries ~gen_tcp~
+  for TCP and ~gen_udp~ for UDP. We'll use erlang's constructs to
+  construct four different kinds of servers (parallel, sequential,
+  blocking, and nonblocking).
+
+** Simple fetch from a server
+   Let's fetch ~https://google.com~ from some server
+   somewhere. Through the magic of TCP (and DNS), we get a direct
+   bytestream socket right to google's webserver, which we can use to
+   talk to it. 
+
+   We can send anything we'd like down this socket, something
+   important to consider. You should never write fragile code that
+   assumes invariants about the data in play. Your code should be able
+   to take unlimited ~/dev/random~, at any time. (Or, more typically, specifically
+   adversarial data. The crux is that nobody can make their
+   serialization and deserialization fully correct, so erlang just
+   reboots the process for you instead).
+  
+   #+begin_src erlang
+     -module(lil_get).
+
+     %% Note this flag should never be used with libraries that are ever in
+     %% communication with anyone else, but it is supremely useful for
+     %% iteration and quick debugging.
+     -compile(export_all).
+
+     lil_get(Host) ->
+         %% creates a socket to Host on port 80 of type binary without
+         %% erlang's packet headers (size 0)
+         {ok, Sock} = gen_tcp:connect(Host, 80, [binary, {packet, 0}]),
+         %% this pattern match just crashes on error, which is by design.
+         ok = gen_tcp:send(Sock, "GET / HTTP/1.0\r\n\r\n"),
+         recv_http(Sock, []).
+
+     recv_http(Sock, Acc) ->
+         receive
+             {tcp, Sock, Bin} ->
+                 recv_http(Sock, [Bin|Acc]);
+             {tcp_closed, Sock} ->
+                 list_to_binary(lists:reverse(Acc))
+         end.
+   #+end_src
+
    
+*** Analysis
+    Let's talk about it a bit. Let's look at ~recv_http~, but change a
+    little part of it.
+   
+    #+begin_src erlang
+      recv_http(Sock, Acc) ->
+          receive
+              {tcp, Sock, Bin} ->
+                  recv_http(Socket, list_to_binary([Acc, Bin]));
+              {tcp_closed -> Sock} ->
+                  Acc
+          end.
+    #+end_src
+
+    This would be a tempting way to write this code. Arguably there's
+    more appeal to it, because of the way that your brain can parse
+    it. When parsing the function, your brain notices that it has a
+    very simple behavior. It's a simple branching. If you have an open
+    socket, record and recurse. If you're done, return the data. You
+    only ever deal with bitstrings, so there's less type-data you need
+    to keep in your head.
+   
+    However, if you fell into this trap, you'd have gone quadratic. If
+    you were writing C, you might have binary buffers be resizable and
+    call a realloc, with a possibly lower overhead, but here,
+    everything is immutable. You mustn't write code that creates
+    objects unnecessarily. Here, you're creating a new,
+    progressively-larger-and-larger object for every recursive
+    call. There's a small solace in that a smart enough GC being able
+    to reclaim this memory in a relative small frame of time, because
+    you're only ever pointing to the most recent binary string. Note
+    how if the function were not tail recursive, you would have to keep
+    /all the binary strings/ in memory, a comparable sin to the fact
+    that they were written to memory in the first place.
+
+    #+begin_src erlang
+      7> lil_get:lil_get("www.google.com").
+      <<"HTTP/1.0 200 OK\r\nDate: Mon, 29 Mar 2021 22:58:06 GMT\r\nExpires: -1\r\nCache-Control: private, max-age=0\r\nContent-Type: "...>>
+      8> 
+    #+end_src
+
+    Go run this, and feel how fast it is. The entirety of google is
+    brought to you in that little text (that's a lie, actually,
+    because this page references a bunch of scripts from other pages,
+    but that's not relevant for my point). Isn't that great? I'm not
+    kidding about the speed, it's noticeably faster than a web
+    browser's rendering time, and puts how slow (and yet crazy fast
+    for the mess they have to deal with) they are in perspective.
+
+    A nice way to display this is using ~string:tokens~:
+    #+begin_src erlang
+      13> string:tokens(binary_to_list(Bin), "\r\n").
+      ["HTTP/1.0 200 OK","Date: Mon, 29 Mar 2021 22:58:27 GMT",
+       "Expires: -1","Cache-Control: private, max-age=0",
+       "Content-Type: text/html; charset=ISO-8859-1",
+       "P3P: CP=\"This is not a P3P policy! See g.co/p3phelp for more info.\"",
+       "Server: gws","X-XSS-Protection: 0",
+       "X-Frame-Options: SAMEORIGIN",
+       "Set-Cookie: 1P_JAR=2021-03-29-22; expires=Wed, 28-Apr-2021 22:58:27 GMT; path=/; domain=.google.com; Secure",
+       "Set-Cookie: NID=212=YrRUf_zT4fvsFGTJixRst0TGp7TFWG5wnpq5USf_FE4i8chD1-X8REHIHO9_Cyo8CVYYyLpejqG4TvCOatuEcps62C7l63p-0_DJzBpkICZ1O-cYxgaLMdTQ0xNsflpdiRMNmep6WRIaXU-r4Wx5s2AS3Zt_m9tHvNKNkYoUjcs; expires=Tue, 28-Sep-2021 22:58:27 GMT; path=/; domain=.google.com; HttpOnly",
+       "Accept-Ranges: none","Vary: Accept-Encoding",
+    #+end_src 
+    And so on.
+    
+** Writing a tcp server
+   Let's just muse for a bit about how we might want to write a
+   server. What's the abstraction that we want to present to the user
+   of the library?
+   
+   When interacting with a TCP server, we're only starting a
+   connection, sending bytes, receiving bytes, and closing the
+   connection. A TCP library should then make these very simple.
+
+   #+begin_src erlang
+     % All these functions will register the server as `tcp_server` for
+     % message passing purposes.
+
+     % Starts a server listening on Port, and then, upon receiving a
+     % connection, creates a thread Fun with the accepted socket with
+     % default arguments [binary, {packet, 0}] as default server options
+     -spec start_server(Host, Port, Fun).
+
+     % Starts a server listening on Port, and then, upon receiving a
+     % connection, creates a thread Fun with the accepted socket as an
+     % argument with PortOptions options.
+     -spec start_server(Host, Port, Fun, PortOptions).
+
+     % Starts a server with a limited thread pool size. Will only start
+     % that number of threads, and the rest of the connections will not be
+     % acknowledged while all the threads are busy. 0 for unlimited pool
+     % size.
+     -spec start_server(Host, Port, Fun, PortOptions, PoolSize).
+
+     % Kills the server and unbinds the socket
+     -spec stop_server().
+   #+end_src

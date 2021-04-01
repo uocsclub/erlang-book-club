@@ -1,6 +1,6 @@
 -module(benc).
-%% -compile(export_all).
--export([decode/1, encode/1, encode_item/1]).
+-compile(export_all).
+%% -export([decode/1, encode/1, encode_item/1]).
 
 decode(Bin) when is_binary(Bin) ->
     parse_loop(Bin);
@@ -75,19 +75,28 @@ pow(A, N) -> A * pow(A, N-1).
 %% in lexographic order for a dictionary.
 
 %% fUnCtIoNaL pRoGraMmInG
+%% encode_dict(L) -> 
+%%     <<$d,
+%%       (lists:foldl(
+%%          fun(A, Bin) ->
+%%                  <<Bin/binary, A/binary>>
+%%          end,
+%%          <<>>,
+%%          lists:map(fun
+%%                        ({K, V}) -> 
+%%                            <<(encode_item(K))/binary, (encode_item(V))/binary>>
+%%                    end, 
+%%                    L)
+%%         ))/binary,
+%%       $e>>.
+
 encode_dict(L) -> 
     <<$d,
-      (lists:foldl(
-         fun(A, Bin) ->
-                 <<Bin/binary, A/binary>>
-         end,
-         <<>>,
-         lists:map(fun
-                       ({K, V}) -> 
-                           <<(encode_item(K))/binary, (encode_item(V))/binary>>
-                   end, 
-                   L)
-        ))/binary,
+      (list_to_binary(lists:map(fun
+                                   ({K, V}) -> 
+                                      <<(encode_item(K))/binary, (encode_item(V))/binary>>
+                              end, 
+                               L)))/binary,
       $e>>.
 
 encode_bin(B) -> <<(integer_to_binary(byte_size(B)))/binary, $:, B/binary>>.
