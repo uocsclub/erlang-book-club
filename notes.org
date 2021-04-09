@@ -2216,7 +2216,7 @@
   application, because most protocols simply require ordering of
   messages.
   
-  A ton of protocols, use TCP under the hood as their mediator above
+  A ton of protocols use TCP under the hood as their mediator above
   the hardware. This includes anything that has to deliver nontrivial
   amounts of data or have some kind of a swarm-like 'network', or
   something that has to deliver more than miniscule amounts of data,
@@ -2224,8 +2224,7 @@
 
   To use these two tools in erlang, we use the two libraries ~gen_tcp~
   for TCP and ~gen_udp~ for UDP. We'll use erlang's constructs to
-  construct four different kinds of servers (parallel, sequential,
-  blocking, and nonblocking).
+  construct a bunch of different servers. 
 
 ** Simple fetch from a server
    Let's fetch ~https://google.com~ from some server
@@ -2265,9 +2264,8 @@
                  list_to_binary(lists:reverse(Acc))
          end.
    #+end_src
-
    
-*** Analysis
+*** Analysis of the performance characteristics
     Let's talk about it a bit. Let's look at ~recv_http~, but change a
     little part of it.
    
@@ -2295,23 +2293,15 @@
     everything is immutable. You mustn't write code that creates
     objects unnecessarily. Here, you're creating a new,
     progressively-larger-and-larger object for every recursive
-    call. There's a small solace in that a smart enough GC being able
-    to reclaim this memory in a relative small frame of time, because
-    you're only ever pointing to the most recent binary string. Note
-    how if the function were not tail recursive, you would have to keep
-    /all the binary strings/ in memory, a comparable sin to the fact
-    that they were written to memory in the first place.
-
+    call. 
     #+begin_src erlang
       7> lil_get:lil_get("www.google.com").
       <<"HTTP/1.0 200 OK\r\nDate: Mon, 29 Mar 2021 22:58:06 GMT\r\nExpires: -1\r\nCache-Control: private, max-age=0\r\nContent-Type: "...>>
       8> 
     #+end_src
 
-    Go run this, and feel how fast it is. The entirety of google is
-    brought to you in that little text (that's a lie, actually,
-    because this page references a bunch of scripts from other pages,
-    but that's not relevant for my point). Isn't that great? I'm not
+    Go run this, and feel how fast it is. A large chunk of google is
+    brought to you in that little text. Isn't that great? I'm not
     kidding about the speed, it's noticeably faster than a web
     browser's rendering time, and puts how slow (and yet crazy fast
     for the mess they have to deal with) they are in perspective.
@@ -2331,35 +2321,138 @@
     #+end_src 
     And so on.
     
-** Writing a tcp server
-   Let's just muse for a bit about how we might want to write a
-   server. What's the abstraction that we want to present to the user
-   of the library?
-   
-   When interacting with a TCP server, we're only starting a
-   connection, sending bytes, receiving bytes, and closing the
-   connection. A TCP library should then make these very simple.
+** Writing a tcp listener
+   When I say a "tcp listener," I'm referring to the simplest
+   scaffolding you can built on top of Erlang to make it usable. 
 
    #+begin_src erlang
-     % All these functions will register the server as `tcp_server` for
-     % message passing purposes.
-
-     % Starts a server listening on Port, and then, upon receiving a
-     % connection, creates a thread Fun with the accepted socket with
-     % default arguments [binary, {packet, 0}] as default server options
-     -spec start_server(Host, Port, Fun).
-
-     % Starts a server listening on Port, and then, upon receiving a
-     % connection, creates a thread Fun with the accepted socket as an
-     % argument with PortOptions options.
-     -spec start_server(Host, Port, Fun, PortOptions).
-
-     % Starts a server with a limited thread pool size. Will only start
-     % that number of threads, and the rest of the connections will not be
-     % acknowledged while all the threads are busy. 0 for unlimited pool
-     % size.
-     -spec start_server(Host, Port, Fun, PortOptions, PoolSize).
-
-     % Kills the server and unbinds the socket
-     -spec stop_server().
+     -module(simps). % simple server
+     -compile(export_all).
+     
+     % Listener logic starts here
+     start_server(Port) ->
+         %% Note how I'm hardcoding {packet, 4} to make passing data easy
+         %% for now between erlang systems.
+         {ok, Listener} = gen_tcp:listen(Port, [binary, {packet, 4}, {reuseaddr, true}, {active, true}]),
+         spawn(fun() -> lhandler(Listener) end).
+     
+     
+     lhandler(Listener) ->
+         {ok, Socket} = gen_tcp:accept(Listener),
+         spawn(fun() -> lhandler(Listener) end),
+         main(Socket).
+     
+     % Listener logic ends here 
+     
+     % Program logic starts here, only dealing with connections (Sockets)
+     
+     % This part I just copied verbatim from the book, with some minor
+     % minor adjustments. It packs and unpacks erlang terms, which will let
+     % us talk to this server from another erlang node and send structured
+     % erlang data transparently. It's a pretty cool system, especially
+     % because it would be very easy to completely hide authentication as a
+     % layer around our actual message passing, but completely hidden from
+     % the "user" (the developer).
+     main(S) ->
+         receive
+             {tcp, S, Bin} ->
+                 %% io:format("Received binary = ~p~n", [Bin]),
+                 String = binary_to_term(Bin),
+                 io:format("received query: ~p~n", [String]),
+                 Response = eval(String),
+                 io:format("response: ~p~n", [Response]),
+                 gen_tcp:send(S, term_to_binary(Response)),
+                 main(S);
+             {tcp_closed, S} ->
+                 io:format("socket closed~n")
+         end.
+     
+     eval(String) ->
+         {ok, A, _} = erl_scan:string(String),
+         {ok, B} = erl_parse:parse_exprs(A),
+         {value, Thing, _} = erl_eval:exprs(B, []),
+         Thing.
+      
    #+end_src
+
+   This should all be self-explanatory, but I'll demonstrate it all in
+   a second, after writing a suitably simple client.
+     
+   #+begin_src erlang
+     -module(simpc). % simple client
+     -compile(export_all).
+
+     do_rpc(Port, ErlStr) when is_integer(Port), is_list(ErlStr) ->
+         do_rpc("localhost", Port, ErlStr);
+     do_rpc(Addr, Port, ErlStr) ->
+         %% Same {packet, 4} hardcode.
+         {ok, S} = gen_tcp:connect(Addr, Port, [binary, {packet, 4}]),
+         ok = gen_tcp:send(Socket, term_to_binary(Str)),
+         receive
+             {tcp, S, Bin} ->
+                 Res = binary_to_term(Bin),
+                 io:format("response: ~p~n", [Res]),
+                 gen_tcp:close(S)
+         end.
+   #+end_src
+
+   
+** Quick demo of server
+   #+begin_src erlang
+     simps:start_server(4242).
+     <0.110.0>
+     10> simpc:do_rpc(4242, "list_to_tuple([42, 32]).").
+     received query: "list_to_tuple([42, 32])."
+     response: {42,32}
+     server response: {42,32}
+     socket closed
+     ok
+     11> simpc:do_rpc(4242, "list_to_tuple([42, 32]).").
+     received query: "list_to_tuple([42, 32])."
+     response: {42,32}
+     server response: {42,32}
+     socket closed
+     ok
+     12> simpc:do_rpc(4242, "list_to_tuple([42, 32]).").
+     received query: "list_to_tuple([42, 32])."
+     response: {42,32}
+     server response: {42,32}
+     socket closed
+     ok
+     13> simpc:do_rpc(4242, "list_to_tuple([42, test]).").
+     received query: "list_to_tuple([42, test])."
+     response: {42,test}
+     server response: {42,test}
+     socket closed
+     ok
+     14> 
+   #+end_src
+   
+** Active and passive sockets
+   You can open a socket in three different ways. Active, Active once,
+   or Passive. You can do this by passing ~{active, true}~, ~{active,
+   false}~, or ~{active, once}~ to the options to tcp ~connect~ or
+   ~listen~.
+
+   If you specify ~{active, true}~, an active socket will be
+   created. ~{active, false}~ specifies a passive socket. ~{active,
+   once}~ creates a socket that is active but only once.
+
+   An active socket is a socket whose process is sent ~{tcp, Socket,
+   Data}~ messages. In this way, if a rogue client overloads the
+   server, the server has no way of mediating this flow. A passive
+   socket only only receives data when you call ~gen_tcp:recv(Socket,
+   N)~ to receive as close to ~N~ bytes of data as you can. 
+
+   In order to have a non-blocking server, you do what we already did.
+
+   In order to have a blocking server, you will call ~gen_tcp:recv~
+   in a loop.
+
+   In order to have a hybrid server, you will call ~inet:setopts(S,
+   [{active, once}])~ after you've finished parsing every chunk of
+   data, with the other code identical to what we have above.
+
+** What's more to do
+   We haven't covered UDP sockets yet, but I feel like this is enough
+   for now.
