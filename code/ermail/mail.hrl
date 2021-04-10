@@ -1,0 +1,2 @@
+-record(mail, {to, from, cc, bcc, msg}).
+-define(PORT, 4242).

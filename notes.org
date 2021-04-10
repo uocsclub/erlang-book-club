@@ -2372,7 +2372,6 @@
          {ok, B} = erl_parse:parse_exprs(A),
          {value, Thing, _} = erl_eval:exprs(B, []),
          Thing.
-      
    #+end_src
 
    This should all be self-explanatory, but I'll demonstrate it all in
@@ -2396,7 +2395,6 @@
          end.
    #+end_src
 
-   
 ** Quick demo of server
    #+begin_src erlang
      simps:start_server(4242).

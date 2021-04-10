@@ -10,7 +10,6 @@ decode(X) when is_list(X) ->
     {ok, FileBin} = file:read_file(X),
     parse_loop(FileBin).
 
-
 parse_loop(Bin) ->
     parse_loop(Bin, []).
 
