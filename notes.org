@@ -2454,3 +2454,508 @@
 ** What's more to do
    We haven't covered UDP sockets yet, but I feel like this is enough
    for now.
+   
+* Tenth day
+  Today is the day we start learning OTP. We're not going to cover OTP
+  in its entirety, because OTP is a massive thing with a lot of
+  disparate parts. However, we're going to learn about one of the most
+  important ones, the ~gen_server~. I think the ~gen_~ stands for
+  generic/general.
+
+  To better think about what we're going to be dealing with in the
+  next little while, think about OTP as the result of completely
+  separating the parts of your program that do the upkeep from the
+  "business critical" parts.
+
+  A good way to map this problem into code, it turns out, is to build
+  a server. So, that is what we'll do.
+  
+  Let's start by building the simplest possible server we can. This
+  series of "servers" is taken from the book.
+** Simple server
+   #+begin_src erlang
+     -module(simple_server).
+     -export([start/2, rpc/2]).
+
+     start(Name, Mod) ->
+         register(Name, 
+                  spawn(fun 
+                            () -> loop(Name, Mod, Mod:init()) 
+                        end)).
+
+     rpc(Name, Request) ->
+         Name ! {self(), Request},
+         receive {Name, Response} ->
+                 Response
+         end.
+
+     loop(Name, Mod, State) ->
+         receive 
+             {From, Request} ->
+                 {Response, NewState} = Mod:handle(Request),
+                 From ! {Name, Response},
+                 loop(Name, Mod, NewState)
+         end.
+   #+end_src
+   Looking at the code, we have three simple functions.
+   - ~start~ starts and names the server.
+   - ~rpc~ is just a standard way to talk to the server named ~Name~.
+   - ~loop~ is the server loop, the bit that gets talked to.
+
+   Note that we've now now created a "pluggable" server. So long as we
+   have a module that conforms to the specification we need, we're
+   golden. Let's write one of those.
+   #+begin_src erlang
+     -module(callbacks).
+     %% Note that these are the two functions that are called in
+     %% simple_server
+     -export([init/0, set/2, val/1, handle/2]).
+     -import(simple_server, [rpc/2]).
+
+
+     %% Let's write a key value store!
+     set(K, V) -> rpc(kvstore, {set, K, V}).
+     val(K) -> rpc(kvstore, {val, K}).
+
+     init() -> dict:new().
+     handle({set, K, V}, Dict) -> {ok, dict:store(K, V, Dict)};
+     handle({val, K}, Dict) -> {dict:find(K, Dict), Dict}.
+   #+end_src
+
+   Let's run this to make sure it works:
+
+   #+begin_src erlang
+     Eshell V11.2  (abort with ^G)
+     1> c("/home/sean/notes/erlang/code/servers/simple_server", 
+          [{outdir, "/home/sean/notes/erlang/code/servers/"}]).
+     {ok,simple_server}
+     2> c("/home/sean/notes/erlang/code/servers/callbacks", 
+          [{outdir, "/home/sean/notes/erlang/code/servers/"}]).
+     {ok,callbacks}
+     3> simple_server:start(callbacks).
+     ,** exception error: undefined function simple_server:start/1
+     4> simple_server:start(callbacks, callbacks).
+     true
+     5> simple_server:start(kvstore, callbacks).
+     true
+     6> callbacks:set(weather, rainy).
+     ok
+     7> callbacks:val(weather).
+     {ok,rainy}
+     8> 
+   #+end_src
+
+   Looks good to me.
+
+** Takeaways
+   There's a few things to take away from this. Probably most
+   important is the fact that we've fully separated the concurrency
+   from the code with this. The business code doesn't actually encode
+   any assumption whatsoever about the way that things are done under
+   the hood which is nice.
+   
+   Another thing to take away from this is that this is almost a
+   direct result of having a functional program -- this would not be
+   hard to implement whatsoever in another language with first class
+   functions.
+   
+   Think for a sec about both of those things.
+
+   And now, less seriously, why is a functional program better than
+   Java? In a functional program, we simply pass a function. In Java,
+   we would have a ~GeneralServerRequestCallbackFactory~ which
+   generates objects of ~ServerRequestCallback~ which ~implements
+   RequestCallback~ strewn out in eight files. Comparatively, we have
+   much less to worry about. Incidentally, this is why oop bad.
+   
+** Second server
+   Alright, we've made a "server". It's not a very good one, and has a
+   glaring flaw. What happens when it crashes? It's simply calling
+   ~handle~ without recourse if it goes wrong. So, let's just change
+   this so that when we crash the server, we crash the client.
+
+   #+begin_src erlang
+     -module(not_so_simple_server).
+     -export([start/2, rpc/2]).
+
+     start(Name, Mod) ->
+         register(Name, 
+                  spawn(fun 
+                            () -> loop(Name, Mod, Mod:init()) 
+                        end)).
+
+     rpc(Name, Request) ->
+         Name ! {self(), Request},
+         receive {Name, Response} ->
+                 Response
+         end.
+
+     loop(Name, Mod, State) ->
+         receive 
+             {From, Request} ->
+                 try Mod:handle(Request, State) of
+                     {Response, NewState} ->
+                         From ! {Name, Response},
+                         loop(Name, Mod, NewState)
+                 catch
+                     %% we don't actually care what this is
+                     _:Why ->
+                         log_this(Name, Request, Why, State),
+                         From ! {Name, crash},
+                         loop(Name, Mod, State)
+                 end
+         end.
+
+     log_this(Name, Request, Why, _State) ->
+         io:format("Server ~p crashed for ~p reason when handling ~p", 
+                   [Name, Request, Why]).
+   #+end_src
+
+   Now, we don't have to worry about the server crashing for no good
+   reason.
+
+   Note that we've just implemented a transactional server. Throughout
+   the process of an interaction between the client and a server, if
+   there is an error, it is always possible to recover the original
+   state and continue as if nothing were. This is an incredible
+   abstraction, which is more pervasive than you might think: some
+   examples of use is databases (where you don't want a half-finished
+   change mucking up your integrity), transactional memory (which is
+   when you do concurrency without locks, and if two threads interfere
+   with each other, they just restart. Powerful, but can lock up),
+   etc.
+
+   Also note that this would be /very/ difficult to implement in
+   something like Java, unless you're a good Java programmer who knows
+   how to crunch through the required layers properly without undue
+   mutable state, but, if you had a system that was originally
+   implemented as a mutable mess, you would have almost no way of
+   converting it into a transactional system without rewriting it, or
+   taking memory snapshots.
+
+** Third server
+   All's well and good, we've created a simple server that doesn't
+   have inconsistent state. However, I'd argue that this server isn't
+   adequate to provide a good "server" abstraction. For a few reasons,
+   the most striking of which being that if we ever want to change the
+   way that the server works, we have absolutely no way of doing
+   that. We have to kill this server, create a new one, then bring it
+   back up. This is unacceptable, because we're supposed to be writing
+   reliable systems.
+
+   Let's implement hot code swapping. Note that hot code swapping is
+   normally a hard thing to program. In C (which is somewhere you'd
+   really like to have this. It reduces the write-debug-edit-whatever
+   cycle by a LOT) you have to implement this by having a thread
+   monitor for a change in your object file, then actually call
+   ~uselib~ on Unix, or ~LoadLibrary~ on windows, then patch some kind
+   of function table (note that you now have the added mental overhead
+   that your functions are actually function pointers, and you need to
+   make sure that the code for the function table itself is correct).
+
+   In erlang, none of that is a problem
+   #+begin_src erlang
+     -module(server_with_swapping).
+     -export([start/2, rpc/2, swap_code/2]).
+
+     start(Name, Mod) ->
+         register(Name,
+                  spawn(fun() -> loop(Name,Mod,Mod:init()) end)).
+
+     swap_code(Name, Mod) -> rpc(Name, {swap_code, Mod}).
+
+     rpc(Name, Request) ->
+         Name ! {self(), Request},
+         receive
+             {Name, Response} -> Response
+         end.
+
+     loop(Name, Mod, State) ->
+         receive
+             {From, {swap_code, NewCallBackMod}} ->
+                 From ! {Name, ack},
+                 loop(Name, NewCallBackMod, State);
+             {From, Request} ->
+                 try Mod:handle(Request, State) of
+                     {Response, NewState} ->
+                         From ! {Name, Response},
+                         loop(Name, Mod, NewState)
+                 catch
+                     %% we don't actually care what this is
+                     _:Why ->
+                         log_this(Name, Request, Why, State),
+                         From ! {Name, crash},
+                         loop(Name, Mod, State)
+                 end
+         end.
+   #+end_src
+
+   Note that the ~{From, Request}~ clause of the receive was copied
+   from the server with transactions, and ~swap_code~ is new.
+
+   This is pretty snazzy, because we can now send messages and
+   actually swap out the code the server is running. Because of
+   erlang's support for first class function types, this because easy.
+
+   Again, to stress, this is certainly something that would not be
+   easily achievable in another language. Think about what you'd want
+   to do when you receive a request to change the code you're running
+   to something new. All the data you currently have out in memory has
+   to work with the new versions of the function, and all the data
+   accessible to the new version has to become accessible. If you make
+   a mistake in Java while doing this, you'll have an
+   almost-nondebuggable runtime exception with no recourse. In C, you
+   might cause your system to get taken over. In here though, nothing
+   happens, we keep looping, crash the client, and a client can send
+   another NewCallBackMod to fix the problem.
+
+   Let's get it working.
+
+   I just swapped out the ~simple_server~ with ~server_with_swapping~,
+   creating the module ~kv_2~.
+
+   #+begin_src erlang
+     -module(kv_2).
+     %% Note that these are the two functions that are called in
+     %% simple_server
+     -export([init/0, set/2, val/1, handle/2]).
+     -import(server_with_swapping, [rpc/2]).
+     
+     
+     %% Let's write a key value store!
+     set(K, V) -> rpc(kvstore, {set, K, V}).
+     val(K) -> rpc(kvstore, {val, K}).
+     
+     init() -> dict:new().
+     handle({set, K, V}, Dict) -> {ok, dict:store(K, V, Dict)};
+     handle({val, K}, Dict) -> {dict:find(K, Dict), Dict}.
+   #+end_src
+
+   Let's say we wanted to be able to get a quick dump of what's in
+   memory. Say, for debug purposes. We can now write another ~kv_3~
+   module that has that function:
+
+   #+begin_src erlang
+     -module(kv_3).
+     %% Note that these are the two functions that are called in
+     %% simple_server
+     -export([init/0, set/2, val/1, dump/0, handle/2]).
+     -import(server_with_swapping, [rpc/2]).
+
+     %% change here!
+     dump() -> rpc(kvstore, {dump}).
+
+
+     %% Let's write a key value store!
+     set(K, V) -> rpc(kvstore, {set, K, V}).
+     val(K) -> rpc(kvstore, {val, K}).
+
+     init() -> dict:new().
+     handle({set, K, V}, Dict) -> {ok, dict:store(K, V, Dict)};
+     handle({val, K}, Dict) -> {dict:find(K, Dict), Dict};
+     handle({dump}, Dict) -> {dict:to_list(Dict)}.
+
+   #+end_src
+
+   And, let's test it.
+
+   #+begin_src erlang
+     Eshell V11.2  (abort with ^G)
+     1> c("/home/sean/notes/erlang/code/servers/server_with_swapping",
+          [{outdir, "/home/sean/notes/erlang/code/servers/"}]).
+     {ok,server_with_swapping}
+     2> c("/home/sean/notes/erlang/code/servers/kv_3", 
+          [{outdir, "/home/sean/notes/erlang/code/servers/"}]).
+     {ok,kv_3}
+     3> c("/home/sean/notes/erlang/code/servers/kv_2", 
+          [{outdir, "/home/sean/notes/erlang/code/servers/"}]).
+     {ok,kv_2}
+     4> server_with_swapping:start(kvstore, kv_2).
+     true
+     5> kv_2:set(weather, rainy).
+     ok
+     6> kv_2:val(weather).
+     {ok,rainy}
+     7> server_with_swapping:swap_code(kvstore, kv_3).
+     ack
+     8> kv_3:val(weather).
+     {ok,rainy}
+     9> kv_2:val(weather).
+     {ok,rainy}
+     10> kv_3:dump().
+     [{weather,rainy}]
+     11> :weary:
+   #+end_src
+
+   Note: Hot code swapping works! in like... 5 minutes of coding!
+
+** The moral of the story is...
+   The moral of the story is that OTP is actually simpler than you
+   thought, and is basically what we've been doing this whole
+   time. With the above, we have a transactional server which does hot
+   code swapping, which is basically everything we need.
+
+** Actually using ~gen_server~
+   I kinda lied, because this isn't exactly ~gen_server~. Now, let's
+   actually see how ~gen_server~ works. In what we just did, the
+   "interface" functions were:
+   - ~start~
+   - ~handle~
+   - ~rpc~
+   - ~swap_code~
+   - ~init~
+   In the actual ~gen_server~, we use:
+   - ~init~ is what you'd expect
+   - ~handle_call~ is what ~handle~ was
+   - ~handle_cast~ is what ~handle~ was but without a response
+   - ~handle_info~ is when you receive info
+   - ~terminate~ is called when the server is dying. The return value
+     is ignored because the server is dying
+   We can then return a bunch of things from ~handle_call~ to "take
+   actions" as the server.
+
+   For example, we could return ~{stop, normal, stopped, State}~ after
+   receiving a ~stop~ message, and kill the server that way. (This is
+   the way to kill the server, don't do it any other way, this makes
+   sure it halts gracefully)
+
+   
+** Template!
+   Here's a ~gen_server~ interaction template that contains all the
+   needed functions.
+
+   #+begin_src erlang
+     %%%-------------------------------------------------------------------
+     %%% @author $author
+     %%% @copyright (C) $year, $company
+     %%% @doc
+     %%%
+     %%% @end
+     %%% Created : $fulldate
+     %%%-------------------------------------------------------------------
+     -module($basename).
+
+     -behaviour(gen_server).
+
+     %% API
+     -export([start_link/0]).
+
+     %% gen_server callbacks
+     -export([init/1,
+              handle_call/3,
+              handle_cast/2,
+              handle_info/2,
+              terminate/2,
+              code_change/3]).
+
+     -define(SERVER, ?MODULE).
+
+     -record(state, {}).
+
+     %%%===================================================================
+     %%% API
+     %%%===================================================================
+
+     %%--------------------------------------------------------------------
+     %% @doc
+     %% Starts the server
+     %%
+     %% @spec start_link() -> {ok, Pid} | ignore | {error, Error}
+     %% @end
+     %%--------------------------------------------------------------------
+     start_link() ->
+         gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+
+     %%%===================================================================
+     %%% gen_server callbacks
+     %%%===================================================================
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% Initializes the server
+     %%
+     %% @spec init(Args) -> {ok, State} |
+     %%                     {ok, State, Timeout} |
+     %%                     ignore |
+     %%                     {stop, Reason}
+     %% @end
+     %%--------------------------------------------------------------------
+     init([]) ->
+         {ok, #state{}}.
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% Handling call messages
+     %%
+     %% @spec handle_call(Request, From, State) ->
+     %%                                   {reply, Reply, State} |
+     %%                                   {reply, Reply, State, Timeout} |
+     %%                                   {noreply, State} |
+     %%                                   {noreply, State, Timeout} |
+     %%                                   {stop, Reason, Reply, State} |
+     %%                                   {stop, Reason, State}
+     %% @end
+     %%--------------------------------------------------------------------
+     handle_call(_Request, _From, State) ->
+         Reply = ok,
+         {reply, Reply, State}.
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% Handling cast messages
+     %%
+     %% @spec handle_cast(Msg, State) -> {noreply, State} |
+     %%                                  {noreply, State, Timeout} |
+     %%                                  {stop, Reason, State}
+     %% @end
+     %%--------------------------------------------------------------------
+     handle_cast(_Msg, State) ->
+         {noreply, State}.
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% Handling all non call/cast messages
+     %%
+     %% @spec handle_info(Info, State) -> {noreply, State} |
+     %%                                   {noreply, State, Timeout} |
+     %%                                   {stop, Reason, State}
+     %% @end
+     %%--------------------------------------------------------------------
+     handle_info(_Info, State) ->
+         {noreply, State}.
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% This function is called by a gen_server when it is about to
+     %% terminate. It should be the opposite of Module:init/1 and do any
+     %% necessary cleaning up. When it returns, the gen_server terminates
+     %% with Reason. The return value is ignored.
+     %%
+     %% @spec terminate(Reason, State) -> void()
+     %% @end
+     %%--------------------------------------------------------------------
+     terminate(_Reason, _State) ->
+         ok.
+
+     %%--------------------------------------------------------------------
+     %% @private
+     %% @doc
+     %% Convert process state when code is changed
+     %%
+     %% @spec code_change(OldVsn, State, Extra) -> {ok, NewState}
+     %% @end
+     %%--------------------------------------------------------------------
+     code_change(_OldVsn, State, _Extra) ->
+             {ok, State}.
+
+     %%%===================================================================
+     %%% Internal functions
+     %%%===================================================================
+   #+end_src
+
+   
