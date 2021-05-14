@@ -1,0 +1,814 @@
+=ERROR REPORT==== 14-May-2021::19:30:54.214700 ===
+test
+=CRASH REPORT==== 14-May-2021::19:38:08.063769 ===
+  crasher:
+    initial call: rb:init/1
+    pid: <0.93.0>
+    registered_name: []
+    exception exit: "cannot locate report directory"
+      in function  rb:get_report_dir/1 (rb.erl, line 313)
+      in call from rb:init/1 (rb.erl, line 189)
+      in call from gen_server:init_it/2 (gen_server.erl, line 417)
+      in call from gen_server:init_it/6 (gen_server.erl, line 385)
+    ancestors: [sasl_sup,<0.84.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.85.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 208
+  neighbours:
+
+=CRASH REPORT==== 14-May-2021::19:38:36.819180 ===
+  crasher:
+    initial call: rb:init/1
+    pid: <0.101.0>
+    registered_name: []
+    exception exit: "cannot locate report directory"
+      in function  rb:get_report_dir/1 (rb.erl, line 313)
+      in call from rb:init/1 (rb.erl, line 189)
+      in call from gen_server:init_it/2 (gen_server.erl, line 417)
+      in call from gen_server:init_it/6 (gen_server.erl, line 385)
+    ancestors: [sasl_sup,<0.84.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.85.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 358
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::19:52:56.249684 ===
+    supervisor: {local,sasl_safe_sup}
+    errorContext: start_error
+    reason: {'EXIT',
+                {undef,
+                    [{alarm_handler,start_link,[],[]},
+                     {supervisor,do_start_child_i,3,
+                         [{file,"supervisor.erl"},{line,385}]},
+                     {supervisor,do_start_child,2,
+                         [{file,"supervisor.erl"},{line,371}]},
+                     {supervisor,'-start_children/2-fun-0-',3,
+                         [{file,"supervisor.erl"},{line,355}]},
+                     {supervisor,children_map,4,
+                         [{file,"supervisor.erl"},{line,1171}]},
+                     {supervisor,init_children,2,
+                         [{file,"supervisor.erl"},{line,321}]},
+                     {gen_server,init_it,2,
+                         [{file,"gen_server.erl"},{line,417}]},
+                     {gen_server,init_it,6,
+                         [{file,"gen_server.erl"},{line,385}]}]}}
+    offender: [{pid,undefined},
+               {id,alarm_handler},
+               {mfargs,{alarm_handler,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,2000},
+               {child_type,worker}]
+
+=SUPERVISOR REPORT==== 14-May-2021::19:52:56.253322 ===
+    supervisor: {local,sasl_sup}
+    errorContext: start_error
+    reason: {shutdown,
+                {failed_to_start_child,alarm_handler,
+                    {'EXIT',
+                        {undef,
+                            [{alarm_handler,start_link,[],[]},
+                             {supervisor,do_start_child_i,3,
+                                 [{file,"supervisor.erl"},{line,385}]},
+                             {supervisor,do_start_child,2,
+                                 [{file,"supervisor.erl"},{line,371}]},
+                             {supervisor,'-start_children/2-fun-0-',3,
+                                 [{file,"supervisor.erl"},{line,355}]},
+                             {supervisor,children_map,4,
+                                 [{file,"supervisor.erl"},{line,1171}]},
+                             {supervisor,init_children,2,
+                                 [{file,"supervisor.erl"},{line,321}]},
+                             {gen_server,init_it,2,
+                                 [{file,"gen_server.erl"},{line,417}]},
+                             {gen_server,init_it,6,
+                                 [{file,"gen_server.erl"},{line,385}]}]}}}}
+    offender: [{pid,undefined},
+               {id,sasl_safe_sup},
+               {mfargs,{supervisor,start_link,
+                                   [{local,sasl_safe_sup},sasl,safe]}},
+               {restart_type,permanent},
+               {shutdown,infinity},
+               {child_type,supervisor}]
+
+=CRASH REPORT==== 14-May-2021::19:52:56.254043 ===
+  crasher:
+    initial call: application_master:init/4
+    pid: <0.83.0>
+    registered_name: []
+    exception exit: {{shutdown,
+                      {failed_to_start_child,sasl_safe_sup,
+                       {shutdown,
+                        {failed_to_start_child,alarm_handler,
+                         {'EXIT',
+                          {undef,
+                           [{alarm_handler,start_link,[],[]},
+                            {supervisor,do_start_child_i,3,
+                             [{file,"supervisor.erl"},{line,385}]},
+                            {supervisor,do_start_child,2,
+                             [{file,"supervisor.erl"},{line,371}]},
+                            {supervisor,'-start_children/2-fun-0-',3,
+                             [{file,"supervisor.erl"},{line,355}]},
+                            {supervisor,children_map,4,
+                             [{file,"supervisor.erl"},{line,1171}]},
+                            {supervisor,init_children,2,
+                             [{file,"supervisor.erl"},{line,321}]},
+                            {gen_server,init_it,2,
+                             [{file,"gen_server.erl"},{line,417}]},
+                            {gen_server,init_it,6,
+                             [{file,"gen_server.erl"},{line,385}]}]}}}}}},
+                     {sasl,start,[normal,[]]}}
+      in function  application_master:init/4 (application_master.erl, line 138)
+    ancestors: [<0.82.0>]
+    message_queue_len: 1
+    messages: [{'EXIT',<0.84.0>,normal}]
+    links: [<0.82.0>,<0.44.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 987
+    stack_size: 28
+    reductions: 234
+  neighbours:
+
+=INFO REPORT==== 14-May-2021::19:52:56.273171 ===
+    application: sasl
+    exited: {{shutdown,
+              {failed_to_start_child,sasl_safe_sup,
+               {shutdown,
+                {failed_to_start_child,alarm_handler,
+                 {'EXIT',
+                  {undef,
+                   [{alarm_handler,start_link,[],[]},
+                    {supervisor,do_start_child_i,3,
+                     [{file,"supervisor.erl"},{line,385}]},
+                    {supervisor,do_start_child,2,
+                     [{file,"supervisor.erl"},{line,371}]},
+                    {supervisor,'-start_children/2-fun-0-',3,
+                     [{file,"supervisor.erl"},{line,355}]},
+                    {supervisor,children_map,4,
+                     [{file,"supervisor.erl"},{line,1171}]},
+                    {supervisor,init_children,2,
+                     [{file,"supervisor.erl"},{line,321}]},
+                    {gen_server,init_it,2,
+                     [{file,"gen_server.erl"},{line,417}]},
+                    {gen_server,init_it,6,
+                     [{file,"gen_server.erl"},{line,385}]}]}}}}}},
+             {sasl,start,[normal,[]]}}
+    type: permanent
+
+=SUPERVISOR REPORT==== 14-May-2021::19:53:10.457332 ===
+    supervisor: {local,sasl_safe_sup}
+    errorContext: start_error
+    reason: {'EXIT',
+                {undef,
+                    [{alarm_handler,start_link,[],[]},
+                     {supervisor,do_start_child_i,3,
+                         [{file,"supervisor.erl"},{line,385}]},
+                     {supervisor,do_start_child,2,
+                         [{file,"supervisor.erl"},{line,371}]},
+                     {supervisor,'-start_children/2-fun-0-',3,
+                         [{file,"supervisor.erl"},{line,355}]},
+                     {supervisor,children_map,4,
+                         [{file,"supervisor.erl"},{line,1171}]},
+                     {supervisor,init_children,2,
+                         [{file,"supervisor.erl"},{line,321}]},
+                     {gen_server,init_it,2,
+                         [{file,"gen_server.erl"},{line,417}]},
+                     {gen_server,init_it,6,
+                         [{file,"gen_server.erl"},{line,385}]}]}}
+    offender: [{pid,undefined},
+               {id,alarm_handler},
+               {mfargs,{alarm_handler,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,2000},
+               {child_type,worker}]
+
+=SUPERVISOR REPORT==== 14-May-2021::19:53:10.460524 ===
+    supervisor: {local,sasl_sup}
+    errorContext: start_error
+    reason: {shutdown,
+                {failed_to_start_child,alarm_handler,
+                    {'EXIT',
+                        {undef,
+                            [{alarm_handler,start_link,[],[]},
+                             {supervisor,do_start_child_i,3,
+                                 [{file,"supervisor.erl"},{line,385}]},
+                             {supervisor,do_start_child,2,
+                                 [{file,"supervisor.erl"},{line,371}]},
+                             {supervisor,'-start_children/2-fun-0-',3,
+                                 [{file,"supervisor.erl"},{line,355}]},
+                             {supervisor,children_map,4,
+                                 [{file,"supervisor.erl"},{line,1171}]},
+                             {supervisor,init_children,2,
+                                 [{file,"supervisor.erl"},{line,321}]},
+                             {gen_server,init_it,2,
+                                 [{file,"gen_server.erl"},{line,417}]},
+                             {gen_server,init_it,6,
+                                 [{file,"gen_server.erl"},{line,385}]}]}}}}
+    offender: [{pid,undefined},
+               {id,sasl_safe_sup},
+               {mfargs,{supervisor,start_link,
+                                   [{local,sasl_safe_sup},sasl,safe]}},
+               {restart_type,permanent},
+               {shutdown,infinity},
+               {child_type,supervisor}]
+
+=CRASH REPORT==== 14-May-2021::19:53:10.461083 ===
+  crasher:
+    initial call: application_master:init/4
+    pid: <0.83.0>
+    registered_name: []
+    exception exit: {{shutdown,
+                      {failed_to_start_child,sasl_safe_sup,
+                       {shutdown,
+                        {failed_to_start_child,alarm_handler,
+                         {'EXIT',
+                          {undef,
+                           [{alarm_handler,start_link,[],[]},
+                            {supervisor,do_start_child_i,3,
+                             [{file,"supervisor.erl"},{line,385}]},
+                            {supervisor,do_start_child,2,
+                             [{file,"supervisor.erl"},{line,371}]},
+                            {supervisor,'-start_children/2-fun-0-',3,
+                             [{file,"supervisor.erl"},{line,355}]},
+                            {supervisor,children_map,4,
+                             [{file,"supervisor.erl"},{line,1171}]},
+                            {supervisor,init_children,2,
+                             [{file,"supervisor.erl"},{line,321}]},
+                            {gen_server,init_it,2,
+                             [{file,"gen_server.erl"},{line,417}]},
+                            {gen_server,init_it,6,
+                             [{file,"gen_server.erl"},{line,385}]}]}}}}}},
+                     {sasl,start,[normal,[]]}}
+      in function  application_master:init/4 (application_master.erl, line 138)
+    ancestors: [<0.82.0>]
+    message_queue_len: 1
+    messages: [{'EXIT',<0.84.0>,normal}]
+    links: [<0.82.0>,<0.44.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 987
+    stack_size: 28
+    reductions: 234
+  neighbours:
+
+=INFO REPORT==== 14-May-2021::19:53:10.479476 ===
+    application: sasl
+    exited: {{shutdown,
+              {failed_to_start_child,sasl_safe_sup,
+               {shutdown,
+                {failed_to_start_child,alarm_handler,
+                 {'EXIT',
+                  {undef,
+                   [{alarm_handler,start_link,[],[]},
+                    {supervisor,do_start_child_i,3,
+                     [{file,"supervisor.erl"},{line,385}]},
+                    {supervisor,do_start_child,2,
+                     [{file,"supervisor.erl"},{line,371}]},
+                    {supervisor,'-start_children/2-fun-0-',3,
+                     [{file,"supervisor.erl"},{line,355}]},
+                    {supervisor,children_map,4,
+                     [{file,"supervisor.erl"},{line,1171}]},
+                    {supervisor,init_children,2,
+                     [{file,"supervisor.erl"},{line,321}]},
+                    {gen_server,init_it,2,
+                     [{file,"gen_server.erl"},{line,417}]},
+                    {gen_server,init_it,6,
+                     [{file,"gen_server.erl"},{line,385}]}]}}}}}},
+             {sasl,start,[normal,[]]}}
+    type: permanent
+
+=INFO REPORT==== 14-May-2021::19:54:22.967619 ===
+    alarm_handler: {set,tooHot}
+=ERROR REPORT==== 14-May-2021::19:57:35.938560 ===
+*** turn on the fan, it's too hot!
+=CRASH REPORT==== 14-May-2021::20:36:38.386576 ===
+  crasher:
+    initial call: supervisor:super_supervisor/1
+    pid: <0.94.0>
+    registered_name: []
+    exception exit: {supervisor_data,{invalid_intensity,start_link}}
+      in function  gen_server:init_it/6 (gen_server.erl, line 401)
+    ancestors: [<0.91.0>]
+    message_queue_len: 2
+    messages: [{'EXIT',<0.91.0>,
+                      {{badmatch,
+                           {error,
+                               {supervisor_data,
+                                   {invalid_intensity,start_link}}}},
+                       [{super_supervisor,start_in_shell_for_testing,0,
+                            [{file,
+                                 "/home/sean/notes/erlang/code/otp-app/super_supervisor.erl"},
+                             {line,11}]},
+                        {erl_eval,do_apply,6,
+                            [{file,"erl_eval.erl"},{line,684}]},
+                        {shell,exprs,7,[{file,"shell.erl"},{line,686}]},
+                        {shell,eval_exprs,7,[{file,"shell.erl"},{line,642}]},
+                        {shell,eval_loop,3,[{file,"shell.erl"},{line,627}]}]}},
+                  {'EXIT',<0.91.0>,normal}]
+    links: []
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 610
+    stack_size: 28
+    reductions: 263
+  neighbours:
+
+=CRASH REPORT==== 14-May-2021::20:38:46.707881 ===
+  crasher:
+    initial call: supervisor:super_supervisor/1
+    pid: <0.123.0>
+    registered_name: []
+    exception exit: {supervisor_data,{invalid_intensity,start_link}}
+      in function  gen_server:init_it/6 (gen_server.erl, line 401)
+    ancestors: [<0.95.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.95.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 216
+  neighbours:
+
+=CRASH REPORT==== 14-May-2021::20:39:01.627628 ===
+  crasher:
+    initial call: supervisor:super_supervisor/1
+    pid: <0.133.0>
+    registered_name: []
+    exception exit: {supervisor_data,{invalid_intensity,start_link}}
+      in function  gen_server:init_it/6 (gen_server.erl, line 401)
+    ancestors: [<0.129.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.129.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 216
+  neighbours:
+
+=CRASH REPORT==== 14-May-2021::20:41:16.171705 ===
+  crasher:
+    initial call: supervisor:super_supervisor/1
+    pid: <0.163.0>
+    registered_name: []
+    exception exit: {supervisor_data,{invalid_intensity,start_link}}
+      in function  gen_server:init_it/6 (gen_server.erl, line 401)
+    ancestors: [<0.134.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.134.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 216
+  neighbours:
+
+=CRASH REPORT==== 14-May-2021::20:41:26.386915 ===
+  crasher:
+    initial call: supervisor:super_supervisor/1
+    pid: <0.172.0>
+    registered_name: []
+    exception exit: {supervisor_data,{invalid_intensity,start_link}}
+      in function  gen_server:init_it/6 (gen_server.erl, line 401)
+    ancestors: [<0.168.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.168.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 216
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::20:42:31.883129 ===
+    supervisor: {local,super_supervisor}
+    errorContext: start_error
+    reason: {'EXIT',
+                {undef,
+                    [{area_server,start_link,[],[]},
+                     {supervisor,do_start_child_i,3,
+                         [{file,"supervisor.erl"},{line,385}]},
+                     {supervisor,do_start_child,2,
+                         [{file,"supervisor.erl"},{line,371}]},
+                     {supervisor,'-start_children/2-fun-0-',3,
+                         [{file,"supervisor.erl"},{line,355}]},
+                     {supervisor,children_map,4,
+                         [{file,"supervisor.erl"},{line,1171}]},
+                     {supervisor,init_children,2,
+                         [{file,"supervisor.erl"},{line,321}]},
+                     {gen_server,init_it,2,
+                         [{file,"gen_server.erl"},{line,417}]},
+                     {gen_server,init_it,6,
+                         [{file,"gen_server.erl"},{line,385}]}]}}
+    offender: [{pid,undefined},
+               {id,tag1},
+               {mfargs,{area_server,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,10000},
+               {child_type,worker}]
+
+=ERROR REPORT==== 14-May-2021::20:45:33.601884 ===
+** Generic server area_server terminating 
+** Last message in was {area,{rectangle,20,3}}
+** When Server state == 0
+** Reason for termination ==
+** {function_clause,
+       [{area_server,handle_call,
+            [{area,{rectangle,20,3}},
+             {<0.91.0>,#Ref<0.4170266090.3273392129.6924>},
+             0],
+            [{file,"/home/sean/notes/erlang/code/otp-app/area_server.erl"},
+             {line,24}]},
+        {gen_server,try_handle_call,4,[{file,"gen_server.erl"},{line,715}]},
+        {gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,744}]},
+        {proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]}
+** Client <0.91.0> stacktrace
+** [{gen,do_call,4,[{file,"gen.erl"},{line,208}]},
+    {gen_server,call,3,[{file,"gen_server.erl"},{line,242}]},
+    {erl_eval,do_apply,6,[{file,"erl_eval.erl"},{line,684}]},
+    {shell,exprs,7,[{file,"shell.erl"},{line,686}]},
+    {shell,eval_exprs,7,[{file,"shell.erl"},{line,642}]},
+    {shell,eval_loop,3,[{file,"shell.erl"},{line,627}]}]
+
+=CRASH REPORT==== 14-May-2021::20:45:33.602871 ===
+  crasher:
+    initial call: area_server:init/1
+    pid: <0.95.0>
+    registered_name: area_server
+    exception error: no function clause matching 
+                     area_server:handle_call({area,{rectangle,20,3}},
+                                             {<0.91.0>,
+                                              #Ref<0.4170266090.3273392129.6924>},
+                                             0) (/home/sean/notes/erlang/code/otp-app/area_server.erl, line 24)
+      in function  gen_server:try_handle_call/4 (gen_server.erl, line 715)
+      in call from gen_server:handle_msg/6 (gen_server.erl, line 744)
+    ancestors: [super_supervisor,<0.91.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.94.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 6772
+    stack_size: 28
+    reductions: 10188
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::20:45:33.606995 ===
+    supervisor: {local,super_supervisor}
+    errorContext: child_terminated
+    reason: {function_clause,
+                [{area_server,handle_call,
+                     [{area,{rectangle,20,3}},
+                      {<0.91.0>,#Ref<0.4170266090.3273392129.6924>},
+                      0],
+                     [{file,
+                          "/home/sean/notes/erlang/code/otp-app/area_server.erl"},
+                      {line,24}]},
+                 {gen_server,try_handle_call,4,
+                     [{file,"gen_server.erl"},{line,715}]},
+                 {gen_server,handle_msg,6,
+                     [{file,"gen_server.erl"},{line,744}]},
+                 {proc_lib,init_p_do_apply,3,
+                     [{file,"proc_lib.erl"},{line,226}]}]}
+    offender: [{pid,<0.95.0>},
+               {id,tag1},
+               {mfargs,{area_server,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,10000},
+               {child_type,worker}]
+
+=ERROR REPORT==== 14-May-2021::20:46:17.069976 ===
+** Generic server prime_server terminating 
+** Last message in was {prime,10}
+** When Server state == 0
+** Reason for termination ==
+** {'module could not be loaded',
+       [{lib_primes,make_prime,"\n",[]},
+        {prime_server,handle_call,3,
+            [{file,"/home/sean/notes/erlang/code/otp-app/prime_server.erl"},
+             {line,25}]},
+        {gen_server,try_handle_call,4,[{file,"gen_server.erl"},{line,715}]},
+        {gen_server,handle_msg,6,[{file,"gen_server.erl"},{line,744}]},
+        {proc_lib,init_p_do_apply,3,[{file,"proc_lib.erl"},{line,226}]}]}
+** Client <0.100.0> stacktrace
+** [{gen,do_call,4,[{file,"gen.erl"},{line,208}]},
+    {gen_server,call,3,[{file,"gen_server.erl"},{line,242}]},
+    {erl_eval,do_apply,6,[{file,"erl_eval.erl"},{line,684}]},
+    {shell,exprs,7,[{file,"shell.erl"},{line,686}]},
+    {shell,eval_exprs,7,[{file,"shell.erl"},{line,642}]},
+    {shell,eval_loop,3,[{file,"shell.erl"},{line,627}]}]
+
+=CRASH REPORT==== 14-May-2021::20:46:17.070852 ===
+  crasher:
+    initial call: prime_server:init/1
+    pid: <0.96.0>
+    registered_name: prime_server
+    exception error: undefined function lib_primes:make_prime/1
+      in function  prime_server:handle_call/3 (/home/sean/notes/erlang/code/otp-app/prime_server.erl, line 25)
+      in call from gen_server:try_handle_call/4 (gen_server.erl, line 715)
+      in call from gen_server:handle_msg/6 (gen_server.erl, line 744)
+    ancestors: [super_supervisor,<0.91.0>]
+    message_queue_len: 0
+    messages: []
+    links: [<0.94.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 6772
+    stack_size: 28
+    reductions: 9448
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::20:46:17.071796 ===
+    supervisor: {local,super_supervisor}
+    errorContext: child_terminated
+    reason: {undef,
+                [{lib_primes,make_prime,"\n",[]},
+                 {prime_server,handle_call,3,
+                     [{file,
+                          "/home/sean/notes/erlang/code/otp-app/prime_server.erl"},
+                      {line,25}]},
+                 {gen_server,try_handle_call,4,
+                     [{file,"gen_server.erl"},{line,715}]},
+                 {gen_server,handle_msg,6,
+                     [{file,"gen_server.erl"},{line,744}]},
+                 {proc_lib,init_p_do_apply,3,
+                     [{file,"proc_lib.erl"},{line,226}]}]}
+    offender: [{pid,<0.96.0>},
+               {id,tag2},
+               {mfargs,{prime_server,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,10000},
+               {child_type,worker}]
+
+=ERROR REPORT==== 14-May-2021::20:50:35.163871 ===
+*** turn on the fan, it's too hot!
+=ERROR REPORT==== 14-May-2021::20:50:35.164132 ===
+*** we can turn off the fan again
+=CRASH REPORT==== 14-May-2021::21:01:16.630600 ===
+  crasher:
+    initial call: application_master:init/4
+    pid: <0.99.0>
+    registered_name: []
+    exception exit: {bad_return,
+                        {{sellaprime_app,start,[normal,[]]},
+                         {'EXIT',
+                             {undef,
+                                 [{sellaprime_app,start,[normal,[]],[]},
+                                  {application_master,start_supervisor,3,
+                                      [{file,"application_master.erl"},
+                                       {line,331}]},
+                                  {application_master,start_the_app,5,
+                                      [{file,"application_master.erl"},
+                                       {line,313}]},
+                                  {application_master,start_it_new,7,
+                                      [{file,"application_master.erl"},
+                                       {line,299}]}]}}}}
+      in function  application_master:init/4 (application_master.erl, line 138)
+    ancestors: [<0.98.0>]
+    message_queue_len: 1
+    messages: [{'EXIT',<0.100.0>,normal}]
+    links: [<0.98.0>,<0.44.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 610
+    stack_size: 28
+    reductions: 213
+  neighbours:
+
+=INFO REPORT==== 14-May-2021::21:01:16.634939 ===
+    application: sellaprime
+    exited: {bad_return,
+                {{sellaprime_app,start,[normal,[]]},
+                 {'EXIT',
+                     {undef,
+                         [{sellaprime_app,start,[normal,[]],[]},
+                          {application_master,start_supervisor,3,
+                              [{file,"application_master.erl"},{line,331}]},
+                          {application_master,start_the_app,5,
+                              [{file,"application_master.erl"},{line,313}]},
+                          {application_master,start_it_new,7,
+                              [{file,"application_master.erl"},
+                               {line,299}]}]}}}}
+    type: temporary
+
+=CRASH REPORT==== 14-May-2021::21:04:34.733981 ===
+  crasher:
+    initial call: application_master:init/4
+    pid: <0.101.0>
+    registered_name: []
+    exception exit: {bad_return,
+                        {{sellaprime_app,start,[normal,[]]},
+                         {'EXIT',
+                             {undef,
+                                 [{sellaprime_app,start,[normal,[]],[]},
+                                  {application_master,start_supervisor,3,
+                                      [{file,"application_master.erl"},
+                                       {line,331}]},
+                                  {application_master,start_the_app,5,
+                                      [{file,"application_master.erl"},
+                                       {line,313}]},
+                                  {application_master,start_it_new,7,
+                                      [{file,"application_master.erl"},
+                                       {line,299}]}]}}}}
+      in function  application_master:init/4 (application_master.erl, line 138)
+    ancestors: [<0.100.0>]
+    message_queue_len: 1
+    messages: [{'EXIT',<0.102.0>,normal}]
+    links: [<0.100.0>,<0.44.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 610
+    stack_size: 28
+    reductions: 213
+  neighbours:
+
+=INFO REPORT==== 14-May-2021::21:04:34.736953 ===
+    application: sellaprime
+    exited: {bad_return,
+                {{sellaprime_app,start,[normal,[]]},
+                 {'EXIT',
+                     {undef,
+                         [{sellaprime_app,start,[normal,[]],[]},
+                          {application_master,start_supervisor,3,
+                              [{file,"application_master.erl"},{line,331}]},
+                          {application_master,start_the_app,5,
+                              [{file,"application_master.erl"},{line,313}]},
+                          {application_master,start_it_new,7,
+                              [{file,"application_master.erl"},
+                               {line,299}]}]}}}}
+    type: temporary
+
+=CRASH REPORT==== 14-May-2021::21:05:39.240757 ===
+  crasher:
+    initial call: application_master:init/4
+    pid: <0.96.0>
+    registered_name: []
+    exception exit: {bad_return,{{sellaprime_app,start,[normal,[]]},ok}}
+      in function  application_master:init/4 (application_master.erl, line 138)
+    ancestors: [<0.95.0>]
+    message_queue_len: 2
+    messages: [{'EXIT',<0.97.0>,normal},
+                  {io_request,<0.100.0>,#Ref<0.1548507084.2470707201.127199>,
+                      {put_chars,unicode,io_lib,format,
+                          ["~p stopping~n",[prime_server]]}}]
+    links: [<0.95.0>,<0.44.0>]
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 376
+    stack_size: 28
+    reductions: 228
+  neighbours:
+
+=INFO REPORT==== 14-May-2021::21:05:39.242301 ===
+    application: sellaprime
+    exited: {bad_return,{{sellaprime_app,start,[normal,[]]},ok}}
+    type: temporary
+
+=ERROR REPORT==== 14-May-2021::21:05:39.243131 ===
+** Generic server prime_server terminating 
+** Last message in was {'EXIT',<0.98.0>,shutdown}
+** When Server state == 0
+** Reason for termination ==
+** {terminated,[{io,format,[<0.96.0>,"~p stopping~n",[prime_server]],[]},
+                {prime_server,terminate,2,
+                              [{file,"/home/sean/notes/erlang/code/otp-app/prime_server.erl"},
+                               {line,30}]},
+                {gen_server,try_terminate,3,
+                            [{file,"gen_server.erl"},{line,727}]},
+                {gen_server,terminate,10,[{file,"gen_server.erl"},{line,912}]},
+                {proc_lib,init_p_do_apply,3,
+                          [{file,"proc_lib.erl"},{line,226}]}]}
+
+=CRASH REPORT==== 14-May-2021::21:05:39.243305 ===
+  crasher:
+    initial call: prime_server:init/1
+    pid: <0.100.0>
+    registered_name: prime_server
+    exception error: terminated
+      in function  io:format/3
+         called as io:format(<0.96.0>,"~p stopping~n",[prime_server])
+      in call from prime_server:terminate/2 (/home/sean/notes/erlang/code/otp-app/prime_server.erl, line 30)
+      in call from gen_server:try_terminate/3 (gen_server.erl, line 727)
+      in call from gen_server:terminate/10 (gen_server.erl, line 912)
+    ancestors: [super_supervisor,<0.97.0>]
+    message_queue_len: 0
+    messages: []
+    links: []
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 28
+    reductions: 6115
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::21:05:39.243665 ===
+    supervisor: {local,super_supervisor}
+    errorContext: shutdown_error
+    reason: {terminated,
+                [{io,format,[<0.96.0>,"~p stopping~n",[prime_server]],[]},
+                 {prime_server,terminate,2,
+                     [{file,
+                          "/home/sean/notes/erlang/code/otp-app/prime_server.erl"},
+                      {line,30}]},
+                 {gen_server,try_terminate,3,
+                     [{file,"gen_server.erl"},{line,727}]},
+                 {gen_server,terminate,10,
+                     [{file,"gen_server.erl"},{line,912}]},
+                 {proc_lib,init_p_do_apply,3,
+                     [{file,"proc_lib.erl"},{line,226}]}]}
+    offender: [{pid,<0.100.0>},
+               {id,tag2},
+               {mfargs,{prime_server,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,10000},
+               {child_type,worker}]
+
+=ERROR REPORT==== 14-May-2021::21:05:39.243905 ===
+** Generic server area_server terminating 
+** Last message in was {'EXIT',<0.98.0>,shutdown}
+** When Server state == 0
+** Reason for termination ==
+** {terminated,[{io,format,[<0.96.0>,"~p stopping~n",[area_server]],[]},
+                {area_server,terminate,2,
+                             [{file,"/home/sean/notes/erlang/code/otp-app/area_server.erl"},
+                              {line,32}]},
+                {gen_server,try_terminate,3,
+                            [{file,"gen_server.erl"},{line,727}]},
+                {gen_server,terminate,10,[{file,"gen_server.erl"},{line,912}]},
+                {proc_lib,init_p_do_apply,3,
+                          [{file,"proc_lib.erl"},{line,226}]}]}
+
+=CRASH REPORT==== 14-May-2021::21:05:39.244073 ===
+  crasher:
+    initial call: area_server:init/1
+    pid: <0.99.0>
+    registered_name: area_server
+    exception error: terminated
+      in function  io:format/3
+         called as io:format(<0.96.0>,"~p stopping~n",[area_server])
+      in call from area_server:terminate/2 (/home/sean/notes/erlang/code/otp-app/area_server.erl, line 32)
+      in call from gen_server:try_terminate/3 (gen_server.erl, line 727)
+      in call from gen_server:terminate/10 (gen_server.erl, line 912)
+    ancestors: [super_supervisor,<0.97.0>]
+    message_queue_len: 0
+    messages: []
+    links: []
+    dictionary: []
+    trap_exit: true
+    status: running
+    heap_size: 4185
+    stack_size: 28
+    reductions: 6078
+  neighbours:
+
+=SUPERVISOR REPORT==== 14-May-2021::21:05:39.244373 ===
+    supervisor: {local,super_supervisor}
+    errorContext: shutdown_error
+    reason: {terminated,
+                [{io,format,[<0.96.0>,"~p stopping~n",[area_server]],[]},
+                 {area_server,terminate,2,
+                     [{file,
+                          "/home/sean/notes/erlang/code/otp-app/area_server.erl"},
+                      {line,32}]},
+                 {gen_server,try_terminate,3,
+                     [{file,"gen_server.erl"},{line,727}]},
+                 {gen_server,terminate,10,
+                     [{file,"gen_server.erl"},{line,912}]},
+                 {proc_lib,init_p_do_apply,3,
+                     [{file,"proc_lib.erl"},{line,226}]}]}
+    offender: [{pid,<0.99.0>},
+               {id,tag1},
+               {mfargs,{area_server,start_link,[]}},
+               {restart_type,permanent},
+               {shutdown,10000},
+               {child_type,worker}]
+

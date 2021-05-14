@@ -2958,4 +2958,695 @@
      %%%===================================================================
    #+end_src
 
+* Eleventh day
+  Today we're going to be building an application from the ground up
+  using OTP. Not only will we write a server (two servers, actually),
+  we'll also get supervision set up, so we can have a supervisor
+  watching for a failure in either of the two servers. After that,
+  we'll set up logging with the OTP logging services. And to top it
+  all off, we'll set up alarms. This is a pretty powerful and simple
+  architecture, and parts of it would be used in basically every
+  single reliable system.
+
+  After that, we'll package it all up as an "OTP application" which
+  will allow for the OTP system to start and stop it for us. 
+
+  However, there's a lot of overlap. Let's start out with the
+  "backbone," the event handling. 
+
+** Event handling
+   An event is just a message that is passed to a process. Let's write
+   an event handling module. This here is just a skeleton for what the
+   module will be later.
+
+   Note that this code won't actually be used, this is just an example
+   of what an event handler should look like. OTP provides us with
+   ~gen_event~ and stuff to do this well.
+  
+   #+begin_src erlang
+     -module(event_handler).
+     -compile(export_all).
+     %% -export([]).
+
+     %% spawn a new process with a no_op handler
+     make(N) -> register(N, spawn(fun() -> handler(fun no_op/1) end)).
+
+     %% swaps out the current event handling function (from no_op to something else) 
+     add_handler(N, F) -> N ! {add, F}.
+
+     event(N, X) -> N ! {event, X}.
+
+     handler(F) ->
+         receive
+             {add, F1} ->
+                 handler(F1);
+             {event, E} ->
+                 (catch F(E)),
+                 handler(F)
+         end.
+
+     no_op(_) -> void.
+   #+end_src
+
+   We can run this like so:
+
+   #+begin_src erlang
+     2> event_handler:make(errors).
+     true
+     3> event_handler:event(errors, hi).
+     {event,hi}
+     4> 
+   #+end_src
+   Even though this did actually send a message, nothing happened,
+   because we haven't actually made the specific handler for errors.
+
+   Let's make another module, which, say, controls a motor. When the
+   motor overheats, we gotta shut it down, or else we'll damage the hardware.
+
+   #+begin_src erlang
+     -module(motor_controller).
+     -export([add_event_handler/0]).
+
+     add_event_handler() ->
+         event_handler:add_handler(errors, fun controller/1).
+
+     controller(too_hot) ->
+         io:format("Turning off the motor~n");
+     controller(AnythingElse) ->
+         io:format("~w Ignoring non-too_hot event ~p~n", [?MODULE, AnythingElse]).
+   #+end_src
+
+   Let's run it.
+   #+begin_src erlang
+     5> motor_controller:add_event_handler().
+     {add,#Fun<motor_controller.0.84328656>}
+     6> event_handler:event(errors, hi).
+     motor_controller Ignoring non-too_hot event hi
+     {event,hi}
+     7> event_handler:event(errors, too_hot).
+     Turning off the motor
+     {event,too_hot}
+   #+end_src
+
+   Note that this is the same shell as I was running earlier. I just
+   compiled it and it works, plug-and-play. 
+
+   The thing to note here is that we now have a generic event
+   handler. We've figured out how to start up a handler and change its
+   behavior over time by simply calling ~event_handler:add_handler~.
+
+   This decouples the actual event handling infrastructure from any
+   specific handler, such as the motor error handler. This is like an
+   extra-spiced-up version of the classic object-oriented (the good
+   object oriented idea) "late-binding of all things." We only do the
+   binding on the delivery of the message, and so we can change the
+   code at any time while the code is running.
+
+** OTP logger
+   OTP comes with two loggers. There's ~error_logger~, which was used
+   prior to OTP 21, and ~logger~, which was introduced in OTP 21. The
+   book is written with ~error_logger~, so that's what I'll use for
+   now, but we can use ~logger~ instead at each point, as I'll try to
+   demonstrate. Let's learn how to use it.
+
+   For us, the programmers, we can simply call the error logger to log
+   an error.
+   #+begin_src erlang
+     10>error_logger:error_msg("An error has occurred\n").
+     =ERROR REPORT==== 14-May-2021::18:35:57.881601 ===
+     An error has occurred
+
+     ok
+     16> logger:error("this is an error").
+     logger:error("this is an error").
+     =ERROR REPORT==== 14-May-2021::19:11:30.650333 ===
+     this is an error
+     ok
+   #+end_src
+   How nice.
+
+   We can also use formatting to send formatted data. The semantics of
+   the formatting is the same as using io:format.
+   #+begin_src erlang
+     9> error_logger:error_msg("An error ~p has occurred ~p~n", [15, 30]).
+     error_logger:error_msg("An error ~p has occurred ~p~n", [15, 30]).
+     =ERROR REPORT==== 14-May-2021::18:37:20.626188 ===
+     An error 15 has occurred 30
+
+     ok
+     15> logger:error(["this is an error", {why, "testing"}, cosmic_ray_123]).
+     =ERROR REPORT==== 14-May-2021::19:10:49.250956 ===
+     FORMAT ERROR: "~ts" - [["this is an error",{why,"testing"},cosmic_ray_123]]
+     ok
+   #+end_src
+   We can also use ~error_report~ to send a standard error report to
+   the error logger.
+   #+begin_src erlang
+     %% We have a function called error_logger:error_report which we can call
+     %% to log the report. The semantics of the function are intuitive, but
+     %% hard to describe.
+
+     -spec error_logger:error_report(Report) -> ok.
+
+     %% Report is a list of items. In the report, we can either pass a
+     %% term, a string, or a tuple {Tag, Data}, where Tag is a term, and
+     %% Data is also a term.
+
+     %% here's an example of a call.
+     error_logger:error_report(["this is an error", {why, whynot}, cosmic_ray_error]).
+   #+end_src
+   Let's call this in the shell.
+   #+begin_src erlang
+     10> error_logger:error_report(["this is an error", {why, whynot}, cosmic_ray_error]).
+     =ERROR REPORT==== 14-May-2021::18:42:44.954436 ===
+         "this is an error"
+         why: whynot
+         cosmic_ray_error
+     ok
+     11> error_logger:error_report(["this is an error", {why, 12345}, cosmic_ray_error]).
+     =ERROR REPORT==== 14-May-2021::18:42:50.561243 ===
+         "this is an error"
+         why: 12345
+         cosmic_ray_error
+     ok
+     12> error_logger:error_report(["this is an error", {why, "testing"}, cosmic_ray_error]).
+     =ERROR REPORT==== 14-May-2021::18:42:54.650653 ===
+         "this is an error"
+         why: testing
+         cosmic_ray_error
+     ok
+   #+end_src
+   Here you can see that the terms can also be integers and strings
+   and so on.
+
+   The logger is configurable, and so we can change its behavior by
+   passing some arguments to erlang. There are a few options available
+   to us. By default, the error logger just prints out the errors to
+   the shell, or write all the errors to a formatted text file, or
+   create a rotating log. A rotating log is simply a large FIFO which
+   allows us to store the last few days' worth of logs, and delete the
+   older ones as we go. You can configure the rotating log to specify
+   how many errors should be kept, and how large each individual log
+   file should be. After specifying that, erlang handles the rest for
+   you.
+
+   To use the loggers, we can pass some arguments to erlang as we
+   boot:
+   - ~erl -boot start_clean~
+
+     This is the default way to boot erlang. It's an environment
+     suited for development, but not much else.
+
+   - ~erl -boot start_sasl~
+
+     This is the environment which is capable of running a production
+     system. SASL stands for System Architecture Support Libraries,
+     and takes care of error logging, overflow protection, and some
+     more things. In particular, it provides ~alarm_handler~,
+     ~release_handler~, and ~systools~. 
+
+   The configuration of this is best done from config files, because
+   passing config as shell arguments is clunky, error prone, and
+   annoying.
+
+   There's a number of kinds of reports that erlang produces, but here
+   are just a few of them:
+   - Supervisor reports are issued when an OTP supervisor stops/starts
+     a supervised process.
+   - Progress reports are issued when an OTP supervisor starts/stops
+   - Crash reports are made when a process started by OTP terminates
+     with a reason other than ~normal~ or ~shutdown~.
+
+   These are all produced automatically.
+
+   We can also call some specific logger functions. We can call
+   ~logger:error~, ~logger:warning~, ~logger:critical~, ~logger:info~,
+   and so on. They all take the same arguments.
+
+*** Configuring the logger
+    Let's write a config file to configure the logger.
+
+    In the book, it says that the following is true, but I found it
+    not to work. I think it's because it uses the old logging api, and
+    my OTP is too recent for that.
+
+    #+begin_src erlang
+      [{sasl, [{sasl_error_logger, false}]}].
+    #+end_src
+    Here, we disable the sasl error logger. Let's make it do something
+    more interesting.
+    #+begin_src erlang
+      [{sasl, [{sasl_error_logger, {file, "/home/sean/notes/erlang/code/otp-app/reports.log"}}]}].
+    #+end_src
+    Now, when OTP starts/stops something, we'll get reports in this
+    file. Let's configure the rotating log so that we can log errors,
+    now.
+    #+begin_src erlang
+      [{sasl, [{sasl_error_logger, {file, "/home/sean/notes/erlang/code/otp-app/reports.log"}},
+               {error_logger_mf_dir,"/Users/joe/error_logs"},
+               %% # bytes per logfile
+               {error_logger_mf_maxbytes,10485760}, % 10 MB
+               %% maximum number of logfiles
+               {error_logger_mf_maxfiles, 10} 
+      ]}].
+    #+end_src
+
+    BUT, none of that actually worked for me. Instead, I used the
+    following:
+    #+begin_src erlang
+      [{kernel,
+        [{logger,
+          [{handler, default, logger_std_h,  % {handler, HandlerId, Module,
+            #{config => #{file => "logging.log"}}}  % Config}
+          ]}]}].
+    #+end_src
+    And running this, we got what we wanted. Here, it puts the errors
+    into logging.log.
+    #+begin_src bash
+      rooty% erl -boot start_sasl -config elog1
+      Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
+
+      Eshell V11.2  (abort with ^G)
+      1> logger:error("test").
+      ok
+      2> 
+      BREAK: (a)bort (A)bort with dump (c)ontinue (p)roc info (i)nfo
+             (l)oaded (v)ersion (k)ill (D)b-tables (d)istribution
+      rooty% cat logging.log 
+      =ERROR REPORT==== 14-May-2021::19:30:54.214700 ===
+      test
+      rooty% 
+    #+end_src
    
+    I don't know how to do the rotating log thing with the new erlang
+    logger, so I'm going to skip it for now. 
+
+** Alarm management
+   Let's use the real OTP ~gen_event~ now.
+
+   #+begin_src erlang
+     -module(my_alarm_handler).
+     -behaviour(gen_event).
+
+     -export([init/1, code_change/3, handle_event/2, 
+              handle_call/2, handle_info/2, terminate/2]).
+
+     %% init args returns {ok, State}
+     init(Args) ->
+         io:format("*** ~p init: ~p~n", [?MODULE, Args]),
+         {ok, 0}.
+
+     %% N is the state
+     handle_event({set_alarm, tooHot}, N) ->
+         logger:error("*** turn on the fan, it's too hot!"),
+         {ok, N + 1};
+     handle_event({clear_alarm, tooHot}, N) ->
+         logger:error("*** we can turn off the fan again"),
+         {ok, N};
+     handle_event(Event, N) ->
+         logger:error("*** unknown event ~p~n", [Event]),
+         {ok, N}.
+
+     %% returns {ok, Reply, State}
+     handle_call(_Request, N) ->
+         Reply = N,
+         {ok, Reply, N}.
+     handle_info(_Info, N) ->
+         {ok, N}.
+
+     terminate(_Reason, _N) -> ok.
+
+     code_change(_OldVsn, State, _Extra) ->
+         {ok, State}.
+   #+end_src
+
+   Let's start interacting with this.
+
+   #+begin_src erlang
+     1>alarm_handler:set_alarm(tooHot).
+     ok.
+   #+end_src
+   #+begin_src bash
+     rooty% tail ./logging.log
+     =INFO REPORT==== 14-May-2021::19:54:22.967619 ===
+         alarm_handler: {set,tooHot}
+   #+end_src
+   As you can see, we can set the alarm manually with
+   ~alarm_handler:set_alarm()~. Let's swap the handler now, and trip
+   the error.
+   #+begin_src bash
+     rooty% erl -boot start_sasl -config elog1                                                             
+     Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
+
+     Eshell V11.2  (abort with ^G)
+     1> gen_event:swap_handler(alarm_handler, {alarm_handler, swap}, {my_alarm_handler, xyz}).
+     ,*** my_alarm_handler init: {xyz,{alarm_handler,[]}}
+     ok
+     2> alarm_handler:set_alarm(tooHot).
+     ok
+     3> 
+     BREAK: (a)bort (A)bort with dump (c)ontinue (p)roc info (i)nfo
+            (l)oaded (v)ersion (k)ill (D)b-tables (d)istribution
+     ^C%
+     rooty% tail logging.log 
+
+     =INFO REPORT==== 14-May-2021::19:54:22.967619 ===
+         alarm_handler: {set,tooHot}
+     =ERROR REPORT==== 14-May-2021::19:57:35.938560 ===
+     ,*** turn on the fan, it's too hot!
+     rooty% 
+   #+end_src
+
+   Note what we did here. We started erlang with ~start_sasl~, then we
+   added our alarm handler as a handler for alarms (note we then saw
+   our process print ~my_alarm_handler~ ~init~ with the arguments we
+   passed it), and tripped the alarm tooHot, and saw that our handler
+   was then called.
+
+** The application servers
+   The application we're building today has two servers. A server
+   which computes prime numbers, and a server which computes the areas
+   of shapes.
+
+   Let's write the prime server:
+   #+begin_src erlang
+     -module(prime_server).
+     -behaviour(gen_server).
+     
+     -export([new_prime/1, start_link/0]).
+     
+     %% here's all the gen_server stuff. You should remember this from last
+     %% time.
+     -export([init/1, handle_call/3, handle_cast/2, 
+              handle_info/2, terminate/2, code_change/3]).
+     
+     start_link() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+     
+     %% Note 20k is a timeout
+     new_prime(N) ->
+         gen_server:call(?MODULE, {prime, N}, 20000).
+     
+     init([]) ->
+         %% this ensures that terminate will be called when we halt
+         process_flag(trap_exit, true),
+         io:format("~p starting now~n", [?MODULE]),
+         {ok, 0}.
+         
+     
+     handle_call({prime, K}, _From, N) ->
+         {reply, make_new_prime(K), N + 1}.
+     
+     
+     handle_cast(_Msg, N) -> {noreply, N}.
+     handle_info(_Info, N) -> {noreply, N}.
+     terminate(_Reason, _N) -> io:format("~p stopping~n",[?MODULE]), ok.
+     code_change(_OldVsn, N, _Extra) -> {ok, N}.
+     
+     make_new_prime(K) ->
+         if
+             K > 100 ->
+                 alarm_handler:set_alarm(tooHot),
+                 N = lib_primes:make_prime(K),
+                 alarm_handler:clear_alarm(tooHot),
+                 N;
+             true ->
+                 lib_primes:make_prime(K)
+         end.
+   #+end_src
+
+   And, let's copy paste this and write the area server.
+   #+begin_src erlang
+     -module(area_server).
+     -behaviour(gen_server).
+
+     -export([area/1, start_link/0]).
+
+     %% here's all the gen_server stuff. You should remember this from last
+     %% time.
+     -export([init/1, handle_call/3, handle_cast/2, 
+              handle_info/2, terminate/2, code_change/3]).
+
+     start_link() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+
+     %% Note 20k is a timeout
+     area(Thing) ->
+         gen_server:call(?MODULE, {area, Thing}, 20000).
+
+     init([]) ->
+         %% this ensures that terminate will be called when we halt
+         process_flag(trap_exit, true),
+         io:format("~p starting now~n", [?MODULE]),
+         {ok, 0}.
+    
+
+     handle_call({area, {square, S}}, _From, N) ->
+         {reply, S * S, N + 1};
+     handle_call({area, {rectangle, B, H}}, _From, N) ->
+         {reply, B * H, N + 1}.
+
+
+     handle_cast(_Msg, N) -> {noreply, N}.
+     handle_info(_Info, N) -> {noreply, N}.
+     terminate(_Reason, _N) -> io:format("~p stopping~n",[?MODULE]), ok.
+     code_change(_OldVsn, N, _Extra) -> {ok, N}.
+   #+end_src
+
+   Note, that there is a mistake somewhere in the code, and this
+   mistake is something that we're gonna fish out in a few seconds.
+
+   Let's set up a supervision tree so that we can supervise this at runtime.
+
+** Supervision
+   Commonly, there are two types of trees. In both types, we have
+   supervisors watching workers.
+
+   In the first type, if one worker crashes, we can restart that
+   worker. This is called a one-for-one supervision tree.
+
+   In the second type, if one worker crashes, we have to restart all
+   the workers under the supervisor. This is a one-for-all supervision
+   tree. Both are fairly trivial to implement with erlang's
+   multiprocessing primitives.
+
+   Supervisors are created with OTP's ~supervisor~ behavior. To use
+   it, we can specify it with a function of the following form:
+   #+begin_src erlang
+     %% RestartStrategy is either one_for_one, or one_for_all.
+
+     %% MaxRestarts is the maximum number of crashes within Time seconds
+     %% that we can support. We don't want a process crashing over and over
+     %% and over again, so this puts a lid on it.
+
+     %% the workers are tuples which specify how to start up the workers,
+     %% which we'll get to in a sec
+
+     init(_) ->
+         {ok, {{RestartStrategy, MaxRestarts, Time},
+               [Worker1, Worker2, Worker3, ...]}}.
+   #+end_src
+
+   Let's write the supervisor:
+   #+begin_src erlang
+     -module(super_supervisor).
+     -behaviour(supervisor).
+     -export([start/0, start_in_shell_for_testing/0, start_link/1, init/1]).
+
+     start() ->
+         spawn(fun () ->
+                       supervisor:start_link({local, ?MODULE}, ?MODULE, _Arg = [])
+               end).
+
+     start_in_shell_for_testing() ->
+         {ok, Pid} = supervisor:start_link({local, ?MODULE}, ?MODULE, _Arg = []),
+         unlink(Pid).
+
+     start_link(Args) ->
+         supervisor:start_link({local, ?MODULE}, ?MODULE, Args).
+
+     init([]) ->
+         gen_event:swap_handler(alarm_handler, {alarm_handler, swap}, {my_alarm_handler, xyz}),
+         {ok, {{one_for_one, start_link, []},
+               [{tag1,
+                 {area_server, start_link, []},
+                 permanent, 10000, worker, [area_server]},
+                {tag2,
+                 {prime_server, start_link, []},
+                 permanent, 10000, worker, [prime_server]}]}}.
+   #+end_src
+
+   Worker specifications (the stuff that we were talking about earlier
+   and returned from the init function) are as follows:
+   #+begin_src erlang
+     {Tag, {Mod, Func, Args}, 
+      Restart, Shutdown, Type, [Mod1]}
+   #+end_src
+   The Tag is just something that we can use to refer to the process.
+   
+   The ~{MFA}~ tuple is the function that the supervisor will use to
+   start the worker.
+
+   The ~Restart~ is what happens when a process crashes. A ~permanent~
+   process is always restarted. A ~transient~ process is restarted if
+   it returns a non-normal exit value. A ~temporary~ process is not
+   restarted.
+
+   ~Shutdown~ is the shutdown time. If a worker takes longer than
+   this, it's terminated.
+
+   ~Type~ can be either ~worker~ or ~supervisor~. We can then
+   construct a tree of supervisors.
+
+   The last list, mod1, is the name of the callback module if the
+   process is either a supervisor or ~gen_server~ callback module.
+
+** Starting it up
+   Ok, let's start it up.
+   #+begin_src bash
+     rooty% erl -boot start_sasl -config elog1                                                                                      
+     Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]                                     
+
+     Eshell V11.2  (abort with ^G)                                                                                                  
+     1> super_supervisor:start_in_shell_for_testing().                                                                              
+     ,*** my_alarm_handler init: {xyz,{alarm_handler,[]}}                                                                            
+     area_server starting now                                                                                                       
+     prime_server starting now                                                                                                      
+     true                                                                                                                           
+     2> area_server:area({rectangle, 20, 3}).                                                                                       
+     area_server stopping                                                                                                           
+     area_server starting now 
+     ,** exception exit: {{function_clause,[{area_server,handle_call,
+                                                        [{area,{rectangle,20,3}},
+                                                         {<0.91.0>,#Ref<0.4170266090.3273392129.6924>},
+                                                         0],
+                                                        [{file,"/home/sean/notes/erlang/code/otp-app/area_server.erl"},
+                                                         {line,24}]},
+                                           {gen_server,try_handle_call,4,
+                                                       [{file,"gen_server.erl"},{line,715}]},
+                                           {gen_server,handle_msg,6, 
+                                                       [{file,"gen_server.erl"},{line,744}]},
+                                           {proc_lib,init_p_do_apply,3,
+                                                     [{file,"proc_lib.erl"},{line,226}]}]},
+                         {gen_server,call,
+                                     [area_server,{area,{rectangle,20,3}},20000]}}
+          in function  gen_server:call/3 (gen_server.erl, line 246)
+     3> area_server:area({rectongle, 20, 3}).
+     60
+     4> area_server:area({square, 10}).
+     100
+     5> prime_server:new_prime(10).
+     prime_server stopping
+     prime_server starting now
+     ,** exception exit: {{undef,[{lib_primes,make_prime,"\n",[]},
+                                 {prime_server,handle_call,3,
+                                               [{file,"/home/sean/notes/erlang/code/otp-app/prime_server.erl"},
+                                                {line,25}]},
+                                 {gen_server,try_handle_call,4,
+                                             [{file,"gen_server.erl"},{line,715}]},
+                                 {gen_server,handle_msg,6,
+                                             [{file,"gen_server.erl"},{line,744}]},
+                                 {proc_lib,init_p_do_apply,3,
+                                           [{file,"proc_lib.erl"},{line,226}]}]},
+                         {gen_server,call,[prime_server,{prime,10},20000]}}
+          in function  gen_server:call/3 (gen_server.erl, line 246)
+     6>                            
+   #+end_src
+
+   Note a few things. For one, we crashed on ~{rectongle}~, but the
+   supervisor restarted it for us. 
+
+   Note we now see a crash because we're missing ~lib_primes~. I got
+   rid of the calls to lib_primes and swapped them out for just
+   hardcoded numbers to keep the alarm functionality. You can see me
+   running this here:
+   #+begin_src bash
+     rooty% erl -boot start_sasl -config elog1
+     Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
+
+     Eshell V11.2  (abort with ^G)
+     1> super_supervisor:start_in_shell_for_testing().
+     ,*** my_alarm_handler init: {xyz,{alarm_handler,[]}}
+     area_server starting now
+     prime_server starting now
+     true
+     2> prime_server:    
+     code_change/3  handle_call/3  handle_cast/2  handle_info/2  init/1         
+     module_info/0  module_info/1  new_prime/1    start_link/0   terminate/2    
+
+     2> prime_server:
+     code_change/3  handle_call/3  handle_cast/2  handle_info/2  init/1         
+     module_info/0  module_info/1  new_prime/1    start_link/0   terminate/2    
+
+     2> prime_server:new_prime(10).
+     {this_isnt_a_prime_lmao,123411234}
+     3> prime_server:new_prime(120).
+     {this_also_isnt_a_prime_but_its_hot,1234123}
+     4> 
+     BREAK: (a)bort (A)bort with dump (c)ontinue (p)roc info (i)nfo
+            (l)oaded (v)ersion (k)ill (D)b-tables (d)istribution
+     ^C%                                                       
+   #+end_src
+
+   And, looking at the log file, we can see:
+
+   #+begin_src bash
+     =ERROR REPORT==== 14-May-2021::20:50:35.163871 ===
+     ,*** turn on the fan, it's too hot!
+     =ERROR REPORT==== 14-May-2021::20:50:35.164132 ===
+     ,*** we can turn off the fan again
+   #+end_src
+
+   Looks like everything works as it should!
+
+** Bundling it all up
+   Let's do the last step to make this a fully-fledged OTP
+   application.
+
+   To do this, we need to create something called a ~.app~ file which
+   contains the information about the application.
+
+   #+begin_src erlang
+     {application, sellaprime,
+      [{description, "The best way to sell fake prime numbers"},
+       {vsn, "1.0"},
+       {modules, [sellaprime_app, super_supervisor, area_server,
+                  prime_server, my_alarm_handler]},
+       {registered,[area_server, prime_server, super_supervisor]},
+       {applications, [kernel,stdlib]},
+       {mod, {sellaprime_app,[]}},
+       {start_phases, []}
+      ]}.
+   #+end_src
+   And, let's make a ~sellaprime_app~ module which handles startup and
+   stopping.
+   #+begin_src erlang
+     -module(sellaprime_app).
+     -behaviour(application).
+     -export([start/2, stop/1]).
+     start(_Type, StartArgs) ->
+         super_supervisor:start_link(StartArgs).
+     stop(_State) ->
+         ok.
+   #+end_src
+   Here you can see me loading and starting the app.
+   #+begin_src erlang
+     rooty% erl -boot start_sasl -config elog1
+     Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:4:4] [ds:4:4:10] [async-threads:1] [hipe]
+     
+     Eshell V11.2  (abort with ^G)
+     1> application:load(sellaprime).
+     ok
+     2> application:start(sellaprime).
+     *** my_alarm_handler init: {xyz,{alarm_handler,[]}}
+     area_server starting now
+     prime_server starting now
+     ok
+     3> area_server:area({rectangle, 20, 10}).
+     200
+     4> application:loaded_applications().
+     [{sellaprime,"The best way to sell fake prime numbers",
+                  "1.0"},
+      {sasl,"SASL  CXC 138 11","4.0.2"},
+      {kernel,"ERTS  CXC 138 10","7.3"},
+      {stdlib,"ERTS  CXC 138 10","3.14.1"}]
+     5> 
+   #+end_src
